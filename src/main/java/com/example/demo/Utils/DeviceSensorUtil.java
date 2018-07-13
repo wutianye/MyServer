@@ -19,7 +19,7 @@ public class DeviceSensorUtil {
             info.setInfo("该类型传感器已存在!");
             return info;
         }
-        DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, false);
+        DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, "0");
         deviceSensorService.insert(deviceSensor);
         if (deviceSensorService.exists(devEUI, typeid)) {
             info.setResult(true);
@@ -40,7 +40,7 @@ public class DeviceSensorUtil {
             hashMap.put("typeid", deviceSensor.getTypeid());
             SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
             hashMap.put("typename", sensorType.getTypename());
-            hashMap.put("state", String.valueOf(deviceSensor.isState()));
+            hashMap.put("state", deviceSensor.getState());
             hashMapList.add(hashMap);
         }
         return hashMapList;
@@ -50,14 +50,14 @@ public class DeviceSensorUtil {
     public static Info updatestate(DeviceSensorService deviceSensorService, DeviceSensor deviceSensor) {
         Info info = new Info();
         DeviceSensor deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
-        if (deviceSensor1.isState() == deviceSensor.isState()) {
+        if (deviceSensor1.getState() == deviceSensor.getState()) {
             info.setResult(false);
             info.setInfo("状态未改变！");
             return info;
         }
         deviceSensorService.insert(deviceSensor1);
         deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
-        if (deviceSensor1.isState() == deviceSensor.isState()) {
+        if (deviceSensor1.getState() == deviceSensor.getState()) {
             info.setResult(true);
             info.setInfo("状态已改变！");
         } else {

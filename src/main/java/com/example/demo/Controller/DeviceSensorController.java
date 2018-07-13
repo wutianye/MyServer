@@ -52,7 +52,7 @@ public class DeviceSensorController {
     @ApiOperation(value = "修改传感器状态", notes = "修改传感器的状态")
     @RequestMapping(value = "/changesensor", method = RequestMethod.POST)
     @ResponseBody
-    public String changesensor(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "state", required = true) boolean state) {
+    public String changesensor(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "state", required = true) String state) {
         DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, state);
         return DeviceSensorUtil.updatestate(deviceSensorService, deviceSensor).toJSONString();
     }
