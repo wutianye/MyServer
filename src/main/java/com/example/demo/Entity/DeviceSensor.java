@@ -15,13 +15,13 @@ public class DeviceSensor {
     private String devEUI;
     private String typeid;
 
-    private boolean state;
+    private String state;
 
-    public boolean isState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(boolean state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -45,7 +45,7 @@ public class DeviceSensor {
         super();
     }
 
-    public DeviceSensor(String devEUI, String typeid, boolean state) {
+    public DeviceSensor(String devEUI, String typeid, String state) {
         super();
         this.devEUI = devEUI;
         this.typeid = typeid;

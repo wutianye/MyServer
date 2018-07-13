@@ -95,7 +95,7 @@ public class DataProcess {
                         float qiti = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 10.0);
                         float wendu = (float) (Integer.parseInt(forcheck.substring(index + 4, index + 8), 16) / 10.0);
                         float shidu = (float) (Integer.parseInt(forcheck.substring(index + 8, index + 12), 16) / 100.0);
-                        System.out.println("风速：" + qiti + "m/s\n温度：" + wendu + "0C\n湿度：" + shidu);
+                        System.out.println("气体：" + qiti + "\n温度：" + wendu + "0C\n湿度：" + shidu);
                         //存数据
                         String value = qiti + "_" + wendu + "_" + shidu;
                         Data data = new Data(date, devEUI, typeid, value);

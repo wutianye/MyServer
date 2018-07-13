@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.HashMap;
 
 @CrossOrigin
@@ -66,7 +67,7 @@ public class UserController {
     @RequestMapping(value = "/applogin", method = RequestMethod.POST)
     @ResponseBody
     public String applogin(@RequestParam(value = "userid", required = true) String userid, @RequestParam(value = "password", required = true) String password) {
-        return UserUtil.applogin(userService, userTokenService, userid, password).toJSONString();
+        return UserUtil.applogin(userService, userTokenService, userid, password).toJSONStringWithToken();
     }
 
 

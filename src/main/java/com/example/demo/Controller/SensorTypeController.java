@@ -5,14 +5,13 @@ import com.example.demo.Service.SensorTypeService;
 import com.example.demo.Utils.SensorTypeUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 
+
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/sensortype")
 public class SensorTypeController {

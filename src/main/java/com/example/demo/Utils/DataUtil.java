@@ -142,11 +142,12 @@ public class DataUtil {
 
     //两日期之间的所有日期list
     public static List<Date> getMonthBetweenDate(Date beginDate, Date endDate) {
-        if (beginDate.getTime() == endDate.getTime()) {
-            return null;
-        }
         List lDate = new ArrayList();
         lDate.add(beginDate);//把开始时间加入集合
+        if (beginDate.getTime() == endDate.getTime()) {
+            return lDate;
+        }
+
         Calendar cal = Calendar.getInstance();
         //使用给定的 Date 设置此 Calendar 的时间
         cal.setTime(beginDate);
