@@ -1,11 +1,26 @@
 package com.example.demo.Utils;
 
+import com.example.demo.Entity.Data;
+import com.example.demo.Service.DataService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+
 
 public class DataProcess {
+
+    @Autowired
+    private static DataService dataService;
+
+    public static String currentTime = "";
+
+    public static HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
+
     static final Base64.Decoder decoder = Base64.getDecoder();
     public static void getDataFromTopicAndPayLoad(String topic, String payload) {
         String str = topic.substring(topic.length() - 2, topic.length());
@@ -22,8 +37,20 @@ public class DataProcess {
                 }
                 System.out.println(buf.toString());
 
+                String date = getNowDate();
+                if (!date.equals(currentTime)) {
+                    currentTime = date;
+                    hashMap.clear();
+                }
+                if (hashMap.containsKey(devEUI)){
+                    if (hashMap.get(devEUI)) {
+                        return;
+                    }
+                } else {
+                    hashMap.put(devEUI, false);
+                }
                 //分析并存储数据
-                hexStringAnalysis(buf.toString(), devEUI);
+                hexStringAnalysis(buf.toString(), devEUI, date);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -31,7 +58,7 @@ public class DataProcess {
     }
 
 
-    public static void hexStringAnalysis(String hexstr, String devEUI) {
+    public static void hexStringAnalysis(String hexstr, String devEUI, String date) {
         //CRC 校验
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
         String forcheck = hexstr.substring(0, hexstr.length() - 4);
@@ -42,31 +69,39 @@ public class DataProcess {
             return ;
         }
 
+        boolean result = true;
         //分析数据
-
         for (int index = 0; index < forcheck.length(); ) {
             String typeid = forcheck.substring(index, index + 2);
             int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
             index += 4;
             switch (typeid) {
                 case "01":
-                    if (length == 2) {
-                        float data = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 100.0);
-                        System.out.println("风速：" + data + "m/s");
+                    if (length == 2 && !forcheck.substring(index, index+4).equals("ffff")) {
+                        float fengsu = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 100.0);
+                        System.out.println("风速：" + fengsu + "m/s");
                         //存数据
-
-
+                        String value = "" + fengsu;
+                        Data data = new Data(date, devEUI, typeid, value);
+                        dataService.insert(data);
+                    } else {
+                        result = false;
                     }
                     break;
                 case "02":
-                    if (length == 6){
+                    if (length == 6 && !forcheck.substring(index, index + 4).equals("ffff") &&
+                            !forcheck.substring(index + 4, index + 8).equals("ffff") &&
+                            !forcheck.substring(index + 8, index + 12).equals("ffff")){
                         float qiti = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 10.0);
                         float wendu = (float) (Integer.parseInt(forcheck.substring(index + 4, index + 8), 16) / 10.0);
                         float shidu = (float) (Integer.parseInt(forcheck.substring(index + 8, index + 12), 16) / 100.0);
                         System.out.println("风速：" + qiti + "m/s\n温度：" + wendu + "0C\n湿度：" + shidu);
                         //存数据
-
-
+                        String value = qiti + "_" + wendu + "_" + shidu;
+                        Data data = new Data(date, devEUI, typeid, value);
+                        dataService.insert(data);
+                    } else {
+                        result = false;
                     }
                     break;
                 default:
@@ -74,6 +109,12 @@ public class DataProcess {
             }
             index += length;
         }
+        hashMap.put(devEUI, result);
+    }
 
+    public static String getNowDate() {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhh");
+        return sdf.format(date);
     }
 }
