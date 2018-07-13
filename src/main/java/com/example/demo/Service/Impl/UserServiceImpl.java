@@ -26,4 +26,7 @@ public class UserServiceImpl implements UserService{
     public User findByUserid(String userid) {
         return userJpaRepository.findUserByUserid(userid);
     }
+
+
+
 }
