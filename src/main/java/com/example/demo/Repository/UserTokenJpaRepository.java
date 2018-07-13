@@ -5,5 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserTokenJpaRepository extends JpaRepository<UserToken, String> {
 
-    UserToken findUserTokenByToken(String token);
+    UserToken findByWebtokenOrApptoken(String webtoken, String Apptoken);
+
+    UserToken findByUserid(String userid);
 }

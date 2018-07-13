@@ -37,9 +37,15 @@ public class UserUtil {
         if (user.getPassword().equals(password)) {
             info.setResult(true);
             try {
-                info.setToken(JwtToken.createToken());
-                UserToken userToken = new UserToken(userid, info.getToken());
-                userTokenService.insert(userToken);
+                info.setToken(JwtToken.createToken(userid));
+                if (userTokenService.exists(userid)) {
+                    UserToken userToken = userTokenService.findByUserid(userid);
+                    userToken.setWebtoken(info.getToken());
+                    userTokenService.insert(userToken);
+                } else {
+                    UserToken userToken = new UserToken(userid, info.getToken(), null);
+                    userTokenService.insert(userToken);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -51,7 +57,7 @@ public class UserUtil {
         return info;
     }
 
-    public static Info applogin(UserService userService, String userid, String password) {
+    public static Info applogin(UserService userService, UserTokenService userTokenService, String userid, String password) {
         Info info = new Info();
         if (!userService.exists(userid)) {
             info.setResult(false);
@@ -61,6 +67,19 @@ public class UserUtil {
         User user = userService.findByUserid(userid);
         if (user.getPassword().equals(password) && user.getFlag().equals("common")) {
             info.setResult(true);
+            try {
+                info.setToken(JwtToken.createToken(userid));
+                if (userTokenService.exists(userid)) {
+                    UserToken userToken = userTokenService.findByUserid(userid);
+                    userToken.setApptoken(info.getToken());
+                    userTokenService.insert(userToken);
+                } else {
+                    UserToken userToken = new UserToken(userid, null, info.getToken());
+                    userTokenService.insert(userToken);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             info.setInfo("登陆成功！");
         } else {
             info.setResult(false);
