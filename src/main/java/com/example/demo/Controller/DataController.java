@@ -24,7 +24,8 @@ public class DataController {
     @ApiOperation(value = "获取某日历史数据", notes = "获取某日24时的指定设备传感器数据")
     @RequestMapping(value = "/getdatabydate", method = RequestMethod.POST)
     @ResponseBody
-    public List<HashMap<String, String>> getdatabydate(@RequestParam(value = "date", required = true) String date, @RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {
+    public List<HashMap<String, String>> getdatabydate(@RequestParam(value = "date", required = true) String date, @RequestParam(value = "devEUI", required = true)
+            String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {
         return DataUtil.getdatabydate(dataService, date, devEUI, typeid, choice);
     }
 

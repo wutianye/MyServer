@@ -86,7 +86,13 @@ public class DataProcess {
                         //存数据
                         String value = "" + fengsu;
                         Data data = new Data(date, devEUI, typeid, value);
-                        dataService.insert(data);
+                        try{
+                            dataService.insert(data);
+                        }catch (Exception e){
+                          //  e.printStackTrace();
+                            System.out.println("dataService 异常");
+                        }
+
                     } else {
                         result = false;
                     }
@@ -102,7 +108,12 @@ public class DataProcess {
                         //存数据
                         String value = qiti + "_" + wendu + "_" + shidu;
                         Data data = new Data(date, devEUI, typeid, value);
-                        dataService.insert(data);
+                        try{
+                            dataService.insert(data);
+                        }catch (Exception e){
+                          //  e.printStackTrace();
+                            System.out.println("dataService 异常");
+                        }
                     } else {
                         result = false;
                     }
