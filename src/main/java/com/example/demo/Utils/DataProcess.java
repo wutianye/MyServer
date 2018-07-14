@@ -2,20 +2,23 @@ package com.example.demo.Utils;
 
 import com.example.demo.Entity.Data;
 import com.example.demo.Service.DataService;
+import com.example.demo.Service.Impl.DataServiceImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
 
+
 public class DataProcess {
 
-    @Autowired
-    private static DataService dataService;
+    private static DataService dataService = SpringBeanFactoryUtil.getBean(DataServiceImpl.class);
 
     public static String currentTime = "";
 
