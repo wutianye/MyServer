@@ -21,7 +21,9 @@ public class DataController {
      * 获取历史数据
      * 描述：给定日期、devEUI、传感器类型，返回某日24时该传感器的数据
      */
-    @ApiOperation(value = "获取某日历史数据", notes = "获取某日24时的指定设备传感器数据")
+    @ApiOperation(value = "获取某日历史数据", notes = "获取某日24时的指定设备传感器数据\n" +
+            "如:20180701,0001000100010001,01 (typeid 01 指风速传感器)\n" +
+            "20180701,0001000100010001,02,qiti  （typeid 02 指温湿度氨气三合一传感器)")
     @RequestMapping(value = "/getdatabydate", method = RequestMethod.POST)
     @ResponseBody
     public List<HashMap<String, String>> getdatabydate(@RequestParam(value = "date", required = true) String date, @RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {

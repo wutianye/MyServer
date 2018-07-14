@@ -25,8 +25,8 @@ public class UserDeviceController {
     @ApiOperation(value = "添加设备", notes = "添加一个设备")
     @RequestMapping(value = "/adddevice", method = RequestMethod.POST)
     @ResponseBody
-    public String adddevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "devname", required = true) String devname, @RequestAttribute("currentUserid") String userid) {
-        return UserDeviceUtil.adddevice(userDeviceService, devEUI, devname, userid).toJSONString();
+    public String adddevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "devname", required = true) String devname, @RequestAttribute("currentUserid") String userid, @RequestParam(value = "longitude", required = false) String longitude, @RequestParam(value = "latitude", required = false) String latitude, @RequestParam(value = "address", required = false) String address) {
+        return UserDeviceUtil.adddevice(userDeviceService, devEUI, devname, userid, longitude, latitude, address).toJSONString();
     }
 
     /**

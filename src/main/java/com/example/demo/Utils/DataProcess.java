@@ -85,7 +85,11 @@ public class DataProcess {
                         System.out.println("风速：" + fengsu + "m/s");
                         //存数据
                         String value = "" + fengsu;
-                        Data data = new Data(date, devEUI, typeid, value);
+                        Data data = new Data();
+                        data.setDevEUI(devEUI);
+                        data.setDate(date);
+                        data.setTypeid(typeid);
+                        data.setValue(value);
                         dataService.insert(data);
                     } else {
                         result = false;
@@ -101,7 +105,12 @@ public class DataProcess {
                         System.out.println("气体：" + qiti + "\n温度：" + wendu + "0C\n湿度：" + shidu);
                         //存数据
                         String value = qiti + "_" + wendu + "_" + shidu;
-                        Data data = new Data(date, devEUI, typeid, value);
+                        Data data = new Data();
+                        data.setDevEUI(devEUI);
+                        data.setDate(date);
+                        data.setTypeid(typeid);
+                        data.setValue(value);
+
                         dataService.insert(data);
                     } else {
                         result = false;
@@ -110,7 +119,7 @@ public class DataProcess {
                 default:
                     return ;
             }
-            index += length;
+            index += length * 2;
         }
         hashMap.put(devEUI, result);
     }

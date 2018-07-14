@@ -10,8 +10,8 @@ import java.util.List;
 public class UserDeviceUtil {
     final public static String APPLICATIONID = "5";
 
-    public static Info adddevice(UserDeviceService userDeviceService, String devEUI, String devname, String userid) {
-        UserDevice userDevice = new UserDevice(devEUI, devname, userid,new UserDeviceUtil().APPLICATIONID);
+    public static Info adddevice(UserDeviceService userDeviceService, String devEUI, String devname, String userid, String longitude, String latitude, String address) {
+        UserDevice userDevice = new UserDevice(devEUI, devname, userid,new UserDeviceUtil().APPLICATIONID, longitude, latitude, address);
         Info info = new Info();
         if (userDeviceService.exists(devEUI)) {
             info.setResult(false);

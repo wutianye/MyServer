@@ -10,7 +10,7 @@ public class Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
 
     private String date;
     private String devEUI;
