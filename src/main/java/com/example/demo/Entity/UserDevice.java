@@ -11,6 +11,9 @@ public class UserDevice {
     private String devname;
     private String userid;
     private String applicationid;
+    private String longitude;//经度
+    private String latitude;//纬度
+    private String address;
 
 
     public String getApplicationid() {
@@ -49,6 +52,30 @@ public class UserDevice {
         super();
     }
 
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public UserDevice(String devEUI, String devname, String userid, String applicationid) {
         super();
         this.devEUI = devEUI;
@@ -57,4 +84,13 @@ public class UserDevice {
         this.applicationid = applicationid;
     }
 
+    public UserDevice(String devEUI, String devname, String userid, String applicationid, String longitude, String latitude, String address) {
+        this.devEUI = devEUI;
+        this.devname = devname;
+        this.userid = userid;
+        this.applicationid = applicationid;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.address = address;
+    }
 }
