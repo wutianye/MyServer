@@ -28,6 +28,7 @@ public class DataProcess {
     public static HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
 
     static final Base64.Decoder decoder = Base64.getDecoder();
+
     public static void getDataFromTopicAndPayLoad(String topic, String payload) {
         String str = topic.substring(topic.length() - 2, topic.length());
         if (str.equals("rx")) {
@@ -91,15 +92,21 @@ public class DataProcess {
                         System.out.println("风速：" + fengsu + "m/s");
                         //存数据
                         String value = "" + fengsu;
-                        Data data = new Data();
-                        data.setDevEUI(devEUI);
-                        data.setDate(date);
-                        data.setTypeid(typeid);
-                        data.setValue(value);
-                        dataService.insert(data);
+                        Data data = new Data(date, devEUI, typeid, value);
+                        try {
+                            dataService.insert(data);
+                        } catch (Exception e) {
+                            System.out.println("dataService 异常");
+                        }
+
                         //存入redis数据库
                         String key = date + "_" + devEUI + "_" + typeid;
-                        redisService.setValue(key, value);
+                        try {
+                            redisService.setValue(key, value);
+                        } catch (Exception e) {
+                            System.out.println("redisService 异常");
+                        }
+
                     } else {
                         result = false;
                     }
@@ -114,15 +121,20 @@ public class DataProcess {
                         System.out.println("气体：" + qiti + "\n温度：" + wendu + "0C\n湿度：" + shidu);
                         //存数据
                         String value = qiti + "_" + wendu + "_" + shidu;
-                        Data data = new Data();
-                        data.setDevEUI(devEUI);
-                        data.setDate(date);
-                        data.setTypeid(typeid);
-                        data.setValue(value);
-                        dataService.insert(data);
-                        //存入Redis数据库
+                        Data data = new Data(date, devEUI, typeid, value);
+                        try {
+                            dataService.insert(data);
+                        } catch (Exception e) {
+                            System.out.println("dataService 异常");
+                        }
+
+                        //存入redis数据库
                         String key = date + "_" + devEUI + "_" + typeid;
-                        redisService.setValue(key, value);
+                        try {
+                            redisService.setValue(key, value);
+                        } catch (Exception e) {
+                            System.out.println("redisService 异常");
+                        }
                     } else {
                         result = false;
                     }
