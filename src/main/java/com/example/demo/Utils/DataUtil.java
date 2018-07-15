@@ -2,12 +2,16 @@ package com.example.demo.Utils;
 
 import com.example.demo.Entity.Data;
 import com.example.demo.Service.DataService;
+import com.example.demo.Service.Impl.RedisServiceImpl;
+import com.example.demo.Service.RedisService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DataUtil {
+
+    private static RedisService redisService = SpringBeanFactoryUtil.getBean(RedisServiceImpl.class);
 
     public static List<HashMap<String, String>> getdatabydate(DataService dataService, String date, String devEUI, String typeid, String choice) {
         List<Data> dataList;
@@ -35,8 +39,16 @@ public class DataUtil {
             } else {
                 str = date + i;
             }
-            if (dataService.exists(str, devEUI, typeid)) {
-                dataList.add(dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid));
+            String key = str + "_" + devEUI + "_" + typeid;
+            //先去redis中查找数据，如果没有再去MySQL中查询
+            if (redisService.hasKey(key)) {
+                String value = redisService.getValue(key);
+                Data data = new Data(date, devEUI, typeid, value);
+                dataList.add(data);
+            } else {
+                if (dataService.exists(str, devEUI, typeid)) {
+                    dataList.add(dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid));
+                }
             }
         }
         return dataList;
@@ -53,26 +65,52 @@ public class DataUtil {
             } else {
                 str = date + i;
             }
-            if (dataService.exists(str, devEUI, typeid)) {
-                Data data = dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid);
-                String value = data.getValue();
-                switch (choice) {
-                    case "qiti":
-                        data.setValue(value.substring(0, value.indexOf("_")));
-                        break;
-                    case "wendu":
-                        data.setValue(value.substring(value.indexOf("_") + 1, value.indexOf("_", value.indexOf("_") + 1)));
-                        break;
-                    case "shidu":
-                        data.setValue(value.substring(value.indexOf("_",value.indexOf("_") + 1) + 1, value.length()));
-                        break;
-                    default:
-                        return null;
-                }
+            //先去redis中查找数据，如果没有再去MySQL中查询
+            String key = str + "_" + devEUI + "_" + typeid;
+            if (redisService.hasKey(key)) {
+                String value = redisService.getValue(key);
+                Data data = new Data(date, devEUI, typeid, value);
+                data.setValue(handleChoice(choice, value));
                 dataList.add(data);
+            } else {
+                if (dataService.exists(str, devEUI, typeid)) {
+                    Data data = dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid);
+                    String value = data.getValue();
+                    data.setValue(handleChoice(choice, value));
+                    dataList.add(data);
+                }
             }
         }
+
+//            switch (choice) {
+//                case "qiti":
+//                    data.setValue(value.substring(0, value.indexOf("_")));
+//                    break;
+//                case "wendu":
+//                    data.setValue(value.substring(value.indexOf("_") + 1, value.indexOf("_", value.indexOf("_") + 1)));
+//                    break;
+//                case "shidu":
+//                    data.setValue(value.substring(value.indexOf("_",value.indexOf("_") + 1) + 1, value.length()));
+//                    break;
+//                default:
+//                    return null;
+//            }
+//            dataList.add(data);
         return dataList;
+    }
+
+    //处理choice，返回对应value
+    public static String handleChoice(String choice, String value) {
+        switch (choice) {
+            case "qiti":
+                return value.substring(0, value.indexOf("_"));
+            case "wendu":
+                return value.substring(value.indexOf("_") + 1, value.indexOf("_", value.indexOf("_") + 1));
+            case "shidu":
+                return value.substring(value.indexOf("_",value.indexOf("_") + 1) + 1, value.length());
+            default:
+                return null;
+        }
     }
 
 
@@ -166,5 +204,4 @@ public class DataUtil {
         return lDate;
     }
 
-    //存储一条数据到mysql和Redis
 }
