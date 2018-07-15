@@ -121,7 +121,7 @@ public class DataProcess {
                 default:
                     return ;
             }
-            index += length;
+            index += length*2;
         }
         hashMap.put(devEUI, result);
     }
