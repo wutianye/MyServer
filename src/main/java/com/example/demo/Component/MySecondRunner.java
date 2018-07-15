@@ -41,6 +41,7 @@ public class MySecondRunner implements CommandLineRunner{
 
 //			Topic[] topics = {new Topic("application/#", QoS.AT_LEAST_ONCE)};
             Topic[] topics = {new Topic("application/2/device/+/rx", QoS.AT_LEAST_ONCE)};
+//            Topic[] topics = {new Topic("application/5/device/+/rx", QoS.AT_LEAST_ONCE)};
             try {
                 byte[] qoses = connection.subscribe(topics);
             } catch (Exception e) {

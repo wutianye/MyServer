@@ -3,6 +3,8 @@ package com.example.demo.Utils;
 import com.example.demo.Entity.Data;
 import com.example.demo.Service.DataService;
 import com.example.demo.Service.Impl.DataServiceImpl;
+import com.example.demo.Service.Impl.RedisServiceImpl;
+import com.example.demo.Service.RedisService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 public class DataProcess {
 
     private static DataService dataService = SpringBeanFactoryUtil.getBean(DataServiceImpl.class);
+    private static RedisService redisService = SpringBeanFactoryUtil.getBean(RedisServiceImpl.class);
 
     public static String currentTime = "";
 
@@ -75,6 +78,9 @@ public class DataProcess {
         boolean result = true;
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {
+            if (index + 4 >= forcheck.length()) {
+                throw new IndexOutOfBoundsException();
+            }
             String typeid = forcheck.substring(index, index + 2);
             int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
             index += 4;
@@ -91,6 +97,9 @@ public class DataProcess {
                         data.setTypeid(typeid);
                         data.setValue(value);
                         dataService.insert(data);
+                        //存入redis数据库
+                        String key = date + "_" + devEUI + "_" + typeid;
+                        redisService.setValue(key, value);
                     } else {
                         result = false;
                     }
@@ -110,8 +119,10 @@ public class DataProcess {
                         data.setDate(date);
                         data.setTypeid(typeid);
                         data.setValue(value);
-
                         dataService.insert(data);
+                        //存入Redis数据库
+                        String key = date + "_" + devEUI + "_" + typeid;
+                        redisService.setValue(key, value);
                     } else {
                         result = false;
                     }
