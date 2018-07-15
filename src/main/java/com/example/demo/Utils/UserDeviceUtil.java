@@ -32,9 +32,9 @@ public class UserDeviceUtil {
         return info;
     }
 
-    public static List<HashMap<String, String>> getdevices(UserDeviceService userDeviceService, String userid) {
+    public static List getdevices(UserDeviceService userDeviceService, String userid) {
         List<UserDevice> list = userDeviceService.findAllByUserid(userid);
-        return toHashlist(list);
+        return list;
     }
 
     //list<UserDevice>转list<HashMap<String,String>>

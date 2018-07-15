@@ -26,7 +26,8 @@ public class DataController {
             "20180701,0001000100010001,02,qiti  （typeid 02 指温湿度氨气三合一传感器)")
     @RequestMapping(value = "/getdatabydate", method = RequestMethod.POST)
     @ResponseBody
-    public List<HashMap<String, String>> getdatabydate(@RequestParam(value = "date", required = true) String date, @RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {
+    public List<HashMap<String, String>> getdatabydate(@RequestParam(value = "date", required = true) String date, @RequestParam(value = "devEUI", required = true)
+            String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {
         return DataUtil.getdatabydate(dataService, date, devEUI, typeid, choice);
     }
 
