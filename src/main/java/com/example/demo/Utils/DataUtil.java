@@ -162,7 +162,7 @@ public class DataUtil {
 
     //获取日期区间内某devEUI、typeid的24时数据list（一个传感器有多个数据）
     public static List<Data> getdatalistwithdaterangewithoption(DataService dataService, String date1, String date2, String devEUI, String typeid, String choice) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMMdd");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         List<Data> dataList = new ArrayList<Data>();
         try {
             Date startdate = df.parse(date1);
