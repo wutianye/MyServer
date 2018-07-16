@@ -149,7 +149,7 @@ public class DataProcess {
 
     public static String getNowDate() {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhh");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
         return sdf.format(date);
     }
 }
