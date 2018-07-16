@@ -31,9 +31,11 @@ public class DataUtil {
     //获取给定日期、某devEUI、typeid的24时数据list
     public static List<Data> getdatalist(DataService dataService, String date, String devEUI, String typeid) {
         List<Data> dataList = new ArrayList<Data>();
+        Set<Data> dataSet = new HashSet<Data>();
         int i;
+        boolean flag = true;
         String str = "";
-        for (i = 0; i < 24; i++) {
+        for (i = 0; i < 24 && flag; i++) {
             if (i <= 9) {
                 str = date + "0" + i;
             } else {
@@ -44,22 +46,29 @@ public class DataUtil {
             if (redisService.hasKey(key)) {
                 String value = redisService.getValue(key);
                 Data data = new Data(date, devEUI, typeid, value);
-                dataList.add(data);
+                dataSet.add(data);
             } else {
-                if (dataService.exists(str, devEUI, typeid)) {
-                    dataList.add(dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid));
+                //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+                flag = false;
+                str = "%" + date + "%";
+                dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
+                for (Data data : dataSet) {
+                    key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
+                    redisService.setValue(key, data.getValue());
                 }
             }
         }
+        dataList.addAll(dataSet);
         return dataList;
     }
 
     //获取给定日期、某devEUI、typeid的24时数据list（一个传感器有多个数据）
     public static List<Data> getdatalistwithoption(DataService dataService, String date, String devEUI, String typeid, String choice) {
         List<Data> dataList = new ArrayList<Data>();
+        Set<Data> dataSet = new HashSet<Data>();
         int i;
         String str = "";
-        for (i = 0; i < 24; i++) {
+        for (i = 0; i < 24 ; i++) {
             if (i <= 9) {
                 str = date + "0" + i;
             } else {
@@ -69,33 +78,25 @@ public class DataUtil {
             String key = str + "_" + devEUI + "_" + typeid;
             if (redisService.hasKey(key)) {
                 String value = redisService.getValue(key);
-                Data data = new Data(date, devEUI, typeid, value);
-                data.setValue(handleChoice(choice, value));
-                dataList.add(data);
+                Data data = new Data(str, devEUI, typeid, value);
+                dataSet.add(data);
             } else {
-                if (dataService.exists(str, devEUI, typeid)) {
-                    Data data = dataService.findByDateAndDevEUIAndTypeid(str, devEUI, typeid);
-                    String value = data.getValue();
-                    data.setValue(handleChoice(choice, value));
+                //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+                str = "%" + date + "%";
+                dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
+                for (Data data : dataSet) {
+                    key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
+                    redisService.setValue(key, data.getValue());
+                    data.setValue(handleChoice(choice, data.getValue()));
                     dataList.add(data);
                 }
+                return dataList;
             }
         }
-
-//            switch (choice) {
-//                case "qiti":
-//                    data.setValue(value.substring(0, value.indexOf("_")));
-//                    break;
-//                case "wendu":
-//                    data.setValue(value.substring(value.indexOf("_") + 1, value.indexOf("_", value.indexOf("_") + 1)));
-//                    break;
-//                case "shidu":
-//                    data.setValue(value.substring(value.indexOf("_",value.indexOf("_") + 1) + 1, value.length()));
-//                    break;
-//                default:
-//                    return null;
-//            }
-//            dataList.add(data);
+        for (Data data : dataSet) {
+            data.setValue(handleChoice(choice, data.getValue()));
+            dataList.add(data);
+        }
         return dataList;
     }
 
@@ -144,19 +145,49 @@ public class DataUtil {
 
     //获取日期区间内某devEUI、typeid的24时数据list
     public static List<Data> getdatalistwithdaterange(DataService dataService, String date1, String date2, String devEUI, String typeid) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMMdd");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         List<Data> dataList = new ArrayList<Data>();
+        Set<Data> dataSet = new HashSet<Data>();
+        int i;
+        String str = "";
         try {
+            boolean flag = true;
             Date startdate = df.parse(date1);
             Date enddate = df.parse(date2);
             List<Date> dateList = getMonthBetweenDate(startdate, enddate);
             for (Date date : dateList) {
                 String dateid = df.format(date);
-                dataList.addAll(getdatalist(dataService, dateid, devEUI, typeid));
+                for (i = 0; i < 24; i++) {
+                    if (i <= 9) {
+                        str = dateid + "0" + i;
+                    } else {
+                        str = dateid + "" + i;
+                    }
+                    String key = str + "_" + devEUI + "_" + typeid;
+                    //先去redis中查找数据，如果没有再去MySQL中查询
+                    if (redisService.hasKey(key)) {
+                        String value = redisService.getValue(key);
+                        Data data = new Data(str, devEUI, typeid, value);
+                        dataSet.add(data);
+                    } else {
+                        //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+                        dataSet.addAll(dataService.findByDateBetweenDate1AndDate2AndDevEUIAndTypeid(str, date2 + "23", devEUI, typeid));
+                        for (Data data : dataSet) {
+                            key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
+                            redisService.setValue(key, data.getValue());
+                        }
+                        flag = false;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    break;
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        dataList.addAll(dataSet);
         return dataList;
     }
 
@@ -164,16 +195,46 @@ public class DataUtil {
     public static List<Data> getdatalistwithdaterangewithoption(DataService dataService, String date1, String date2, String devEUI, String typeid, String choice) {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         List<Data> dataList = new ArrayList<Data>();
+        Set<Data> dataSet = new HashSet<Data>();
+        int i;
+        String str = "";
         try {
             Date startdate = df.parse(date1);
             Date enddate = df.parse(date2);
             List<Date> dateList = getMonthBetweenDate(startdate, enddate);
             for (Date date : dateList) {
                 String dateid = df.format(date);
-                dataList.addAll(getdatalistwithoption(dataService, dateid, devEUI, typeid, choice));
+                for (i = 0; i < 24; i++) {
+                    if (i <= 9) {
+                        str = dateid + "0" + i;
+                    } else {
+                        str = dateid + "" + i;
+                    }
+                    String key = str + "_" + devEUI + "_" + typeid;
+                    //先去redis中查找数据，如果没有再去MySQL中查询
+                    if (redisService.hasKey(key)) {
+                        String value = redisService.getValue(key);
+                        Data data = new Data(str, devEUI, typeid, value);
+                        dataSet.add(data);
+                    } else {
+                        //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+                        dataSet.addAll(dataService.findByDateBetweenDate1AndDate2AndDevEUIAndTypeid(str, date2 + "23", devEUI, typeid));
+                        for (Data data : dataSet) {
+                            key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
+                            redisService.setValue(key, data.getValue());
+                            data.setValue(handleChoice(choice, data.getValue()));
+                            dataList.add(data);
+                        }
+                        return dataList;
+                    }
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+        for (Data data : dataSet) {
+            data.setValue(handleChoice(choice, data.getValue()));
+            dataList.add(data);
         }
         return dataList;
     }

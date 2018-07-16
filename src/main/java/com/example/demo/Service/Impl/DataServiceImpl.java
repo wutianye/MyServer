@@ -6,6 +6,8 @@ import com.example.demo.Service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DataServiceImpl implements DataService{
 
@@ -25,6 +27,16 @@ public class DataServiceImpl implements DataService{
     @Override
     public void insert(Data data) {
         dataJpaRepository.save(data);
+    }
+
+    @Override
+    public List<Data> findByDateLikeAndDevEUIAndTypeid(String datepattern, String devEUI, String typeid){
+        return dataJpaRepository.findAllByDateLikeAndDevEUIAndTypeid(datepattern, devEUI, typeid);
+    }
+
+    @Override
+    public List<Data> findByDateBetweenDate1AndDate2AndDevEUIAndTypeid(String date1, String date2, String devEUI, String typeid) {
+        return dataJpaRepository.findAllByDevEUIAndTypeidAndDateBetween(devEUI, typeid, date1, date2);
     }
 
 }
