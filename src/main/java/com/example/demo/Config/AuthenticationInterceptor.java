@@ -3,11 +3,13 @@ package com.example.demo.Config;
 import com.example.demo.Entity.UserToken;
 import com.example.demo.Service.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 public class AuthenticationInterceptor implements HandlerInterceptor{
     @Autowired
@@ -15,6 +17,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         String token = request.getHeader("token");
         if (token == null) {
             throw new RuntimeException("无token，请重新登陆！");

@@ -2,26 +2,33 @@ package com.example.demo.Utils;
 
 import com.example.demo.Entity.Data;
 import com.example.demo.Service.DataService;
+import com.example.demo.Service.Impl.DataServiceImpl;
+import com.example.demo.Service.Impl.RedisServiceImpl;
+import com.example.demo.Service.RedisService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
 
+
 public class DataProcess {
 
-    @Autowired
-    private static DataService dataService;
+    private static DataService dataService = SpringBeanFactoryUtil.getBean(DataServiceImpl.class);
+    private static RedisService redisService = SpringBeanFactoryUtil.getBean(RedisServiceImpl.class);
 
     public static String currentTime = "";
 
     public static HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
 
     static final Base64.Decoder decoder = Base64.getDecoder();
+
     public static void getDataFromTopicAndPayLoad(String topic, String payload) {
         String str = topic.substring(topic.length() - 2, topic.length());
         if (str.equals("rx")) {
@@ -72,6 +79,9 @@ public class DataProcess {
         boolean result = true;
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {
+            if (index + 4 >= forcheck.length()) {
+                throw new IndexOutOfBoundsException();
+            }
             String typeid = forcheck.substring(index, index + 2);
             int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
             index += 4;
@@ -83,7 +93,20 @@ public class DataProcess {
                         //存数据
                         String value = "" + fengsu;
                         Data data = new Data(date, devEUI, typeid, value);
-                        dataService.insert(data);
+                        try {
+                            dataService.insert(data);
+                        } catch (Exception e) {
+                            System.out.println("dataService 异常");
+                        }
+
+                        //存入redis数据库
+                        String key = date + "_" + devEUI + "_" + typeid;
+                        try {
+                            redisService.setValue(key, value);
+                        } catch (Exception e) {
+                            System.out.println("redisService 异常");
+                        }
+
                     } else {
                         result = false;
                     }
@@ -95,11 +118,23 @@ public class DataProcess {
                         float qiti = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 10.0);
                         float wendu = (float) (Integer.parseInt(forcheck.substring(index + 4, index + 8), 16) / 10.0);
                         float shidu = (float) (Integer.parseInt(forcheck.substring(index + 8, index + 12), 16) / 100.0);
-                        System.out.println("风速：" + qiti + "m/s\n温度：" + wendu + "0C\n湿度：" + shidu);
+                        System.out.println("气体：" + qiti + "\n温度：" + wendu + "0C\n湿度：" + shidu);
                         //存数据
                         String value = qiti + "_" + wendu + "_" + shidu;
                         Data data = new Data(date, devEUI, typeid, value);
-                        dataService.insert(data);
+                        try {
+                            dataService.insert(data);
+                        } catch (Exception e) {
+                            System.out.println("dataService 异常");
+                        }
+
+                        //存入redis数据库
+                        String key = date + "_" + devEUI + "_" + typeid;
+                        try {
+                            redisService.setValue(key, value);
+                        } catch (Exception e) {
+                            System.out.println("redisService 异常");
+                        }
                     } else {
                         result = false;
                     }
@@ -107,14 +142,14 @@ public class DataProcess {
                 default:
                     return ;
             }
-            index += length;
+            index += length * 2;
         }
         hashMap.put(devEUI, result);
     }
 
     public static String getNowDate() {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhh");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
         return sdf.format(date);
     }
 }

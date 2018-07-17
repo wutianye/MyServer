@@ -19,7 +19,7 @@ public class DeviceSensorUtil {
             info.setInfo("该类型传感器已存在!");
             return info;
         }
-        DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, false);
+        DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, "0");
         deviceSensorService.insert(deviceSensor);
         if (deviceSensorService.exists(devEUI, typeid)) {
             info.setResult(true);
@@ -40,24 +40,71 @@ public class DeviceSensorUtil {
             hashMap.put("typeid", deviceSensor.getTypeid());
             SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
             hashMap.put("typename", sensorType.getTypename());
-            hashMap.put("state", String.valueOf(deviceSensor.isState()));
+            hashMap.put("state", deviceSensor.getState());
             hashMapList.add(hashMap);
         }
         return hashMapList;
     }
+    //获取指定devEUI下的所有传感器typeid,typename和状态
+    /* *
+     *
+     * 功能描述: 获得指定的设备下的传感器的类别，并且返回指标列表
+     *
+     * @param: [deviceSensorService, sensorTypeService, devEUI]
+     * @return: java.util.List<java.util.HashMap<java.lang.String,java.lang.String>>
+     * @auther: liuyunxing
+     * @Description //TODO
+     * @date: 2018/7/15 13:52
+     * 对于三合一的传感器，将数据拆分处理返回
+     */
+    public static List<HashMap<String,String>> getSensor(DeviceSensorService deviceSensorService, SensorTypeService sensorTypeService, String devEUI) {
+        List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
 
+        List<DeviceSensor> deviceSensorList = deviceSensorService.findBydevEUI(devEUI); // 获得传感器列表
+        for (DeviceSensor deviceSensor : deviceSensorList) {
+            if (deviceSensor.getTypeid().equals("02")){
+                //三合一的传感器
+                String[] choice = {"qiti","wendu","shidu"};
+                String[] name = {"temperature","humidity","gas"};
+                String[] label = {"温度","湿度","气体浓度"};
+                SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
+                for (int i=0;i<3;i++){
+               /*     hashMap.put("typeId",deviceSensor.getTypeid());*/
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("typeid", deviceSensor.getTypeid());
+                    hashMap.put("typename", sensorType.getTypename());
+                    hashMap.put("state", deviceSensor.getState());
+                    hashMap.put("label",label[i]);
+                    hashMap.put("choice",choice[i]);
+                    hashMap.put("name",name[i]);
+                    hashMapList.add(hashMap);
+                }
+            }else if (deviceSensor.getTypeid().equals("01")){
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("typeid", deviceSensor.getTypeid());
+                SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
+                hashMap.put("typename", sensorType.getTypename());
+                hashMap.put("state", deviceSensor.getState());
+                hashMap.put("label","风速");
+                hashMap.put("choice","");
+                hashMap.put("name","wind");
+                hashMapList.add(hashMap);
+            }
+        }
+        return hashMapList;
+    }
     //更新传感器状态
     public static Info updatestate(DeviceSensorService deviceSensorService, DeviceSensor deviceSensor) {
         Info info = new Info();
         DeviceSensor deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
-        if (deviceSensor1.isState() == deviceSensor.isState()) {
+        if (deviceSensor1.getState() == deviceSensor.getState()) {
             info.setResult(false);
             info.setInfo("状态未改变！");
             return info;
         }
         deviceSensorService.insert(deviceSensor1);
         deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
-        if (deviceSensor1.isState() == deviceSensor.isState()) {
+        if (deviceSensor1.getState() == deviceSensor.getState()) {
             info.setResult(true);
             info.setInfo("状态已改变！");
         } else {
