@@ -7,18 +7,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c2030dc6-d79f-491f-b54d-8adf524ba8f7" name="默认的" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DispatchInstruction.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/MQTTUtil.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/RealTimeInfo.java" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DispatchInstruction.class" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/MQTTUtil.class" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/RealTimeInfo.class" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Repository/DataJpaRepository.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Repository/DataJpaRepository.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Service/DataService.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Service/DataService.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Service/Impl/DataServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Service/Impl/DataServiceImpl.java" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataUtil.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataUtil.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DeviceSensorUtil.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DeviceSensorUtil.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/RealTimeUtil.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/RealTimeUtil.java" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/demo/Websocket/WebSocketServer.java" afterPath="$PROJECT_DIR$/src/main/java/com/example/demo/Websocket/WebSocketServer.java" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Repository/DataJpaRepository.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Repository/DataJpaRepository.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Service/DataService.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Service/DataService.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Service/Impl/DataServiceImpl.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Service/Impl/DataServiceImpl.class" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DataProcess.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DataProcess.class" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DataUtil.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DataUtil.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DeviceSensorUtil.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/DeviceSensorUtil.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/RealTimeUtil.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Utils/RealTimeUtil.class" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Websocket/WebSocketServer$1.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Websocket/WebSocketServer$1.class" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/example/demo/Websocket/WebSocketServer.class" afterPath="$PROJECT_DIR$/target/classes/com/example/demo/Websocket/WebSocketServer.class" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -38,7 +42,7 @@
       <file leaf-file-name="DataController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Controller/DataController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="814">
+            <state relative-caret-position="968">
               <caret line="44" column="5" lean-forward="false" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -70,9 +74,31 @@
       <file leaf-file-name="DataProcess.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1056">
-              <caret line="62" column="43" lean-forward="false" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="43" />
+            <state relative-caret-position="158">
+              <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MySecondRunner.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Component/MySecondRunner.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DemoApplication.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/DemoApplication.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <folding>
+                <element signature="e#373#374#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -87,17 +113,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WebSocketServer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WebSocketServer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Websocket/WebSocketServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2082">
-              <caret line="25" column="34" lean-forward="false" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
+            <state relative-caret-position="330">
+              <caret line="45" column="126" lean-forward="true" selection-start-line="45" selection-start-column="126" selection-end-line="45" selection-end-column="126" />
               <folding>
-                <element signature="e#695#720#0" expanded="true" />
-                <element signature="e#921#922#0" expanded="true" />
-                <element signature="e#979#980#0" expanded="true" />
-                <element signature="e#2435#2436#0" expanded="true" />
-                <element signature="e#2502#2503#0" expanded="true" />
+                <element signature="e#1652#1677#0" expanded="true" />
+                <element signature="e#2027#2044#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -191,8 +214,8 @@
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/demo/Controller/DataController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/demo/Websocket/WebSocketServer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java" />
       </list>
     </option>
   </component>
@@ -285,8 +308,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -365,6 +386,8 @@
       </pane>
       <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -531,15 +554,15 @@
       <workItem from="1531703166399" duration="6492000" />
       <workItem from="1531727050164" duration="11283000" />
       <workItem from="1531875318810" duration="3687000" />
+      <workItem from="1531879422055" duration="3103000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="161390000" />
+    <option name="totallyTimeSpent" value="164493000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.50289434" order="7" side_tool="true" content_ui="tabs" />
@@ -557,10 +580,10 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42903575" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42903575" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32906976" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27025586" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -802,14 +825,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/DemoApplication.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="10" column="23" lean-forward="false" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://E:/Program Files/JetBrains/mavenlocalrepository/org/springframework/spring-webmvc/5.0.7.RELEASE/spring-webmvc-5.0.7.RELEASE.jar!/org/springframework/web/servlet/DispatcherServlet.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9394">
@@ -869,13 +884,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Component/MySecondRunner.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="21" column="31" lean-forward="false" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="550">
@@ -932,7 +940,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Controller/DataController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="814">
+        <state relative-caret-position="968">
           <caret line="44" column="5" lean-forward="false" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -948,14 +956,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1056">
-          <caret line="62" column="43" lean-forward="false" selection-start-line="62" selection-start-column="43" selection-end-line="62" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Service/DataService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="242">
@@ -966,15 +966,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Websocket/WebSocketServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2082">
-          <caret line="25" column="34" lean-forward="false" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
+        <state relative-caret-position="330">
+          <caret line="45" column="126" lean-forward="true" selection-start-line="45" selection-start-column="126" selection-end-line="45" selection-end-column="126" />
           <folding>
-            <element signature="e#695#720#0" expanded="true" />
-            <element signature="e#921#922#0" expanded="true" />
-            <element signature="e#979#980#0" expanded="true" />
-            <element signature="e#2435#2436#0" expanded="true" />
-            <element signature="e#2502#2503#0" expanded="true" />
+            <element signature="e#1652#1677#0" expanded="true" />
+            <element signature="e#2027#2044#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/DemoApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <element signature="e#373#374#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Utils/DataProcess.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/demo/Component/MySecondRunner.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
