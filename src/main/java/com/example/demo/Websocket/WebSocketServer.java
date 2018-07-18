@@ -28,9 +28,12 @@ public class WebSocketServer {
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
     private String id=""; //  用户id
-
+    Thread thread;
     /**
      * 连接建立成功调用的方法*/
+    public double getRandom(float left, float right){
+        return left + Math.random()*(right - left);
+    }
 
     @OnOpen
     public void onOpen(@PathParam(value="id") String id, Session session){
@@ -42,32 +45,43 @@ public class WebSocketServer {
         System.out.println("有新连接加入，当前在线人数为,用户"+this.id +"----" + getOnlineCount());
         try {
             sendMessage("连接成功");
+            thread = new Thread(runnable);
+            thread.start();
+            // 定时发送数据
         } catch (IOException e) {
             System.out.println("websocket IO异常");
             e.printStackTrace();
         }
     }
-
+     Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            while(true){
+                try {
+                    if (thread.isInterrupted()){
+                        System.out.println("线程被停止了");
+                        return;
+                    }
+                    sendMessage(getRandom(10,50) +"");
+                    Thread.sleep(5000); //  定时发送数据
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
     @OnClose
-    public void  onClose(){
+    public void  onClose() throws InterruptedException {
         System.out.println("断开连接");
         System.out.println(this.id);;
         webSocketSet.remove(this);
         subOnlineCount();// 在线人数--
+        thread.interrupt(); // 回收线程
     }
 
     @OnMessage
     public void onMessage(String message, Session session){
         System.out.println("来自客户端"+this.id+"的消息 "+ message);
-        // 一旦有用户订阅消息，就像用户推送事实的传感器信息
-        //群发消息
-/*        for (WebSocketServer item : webSocketSet) {
-            try {
-                item.sendMessage(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     @OnError
@@ -109,6 +123,7 @@ public class WebSocketServer {
             }
         }
     }
+
 
     /**
      * 线程安全的返回在线人数

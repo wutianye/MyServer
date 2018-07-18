@@ -57,7 +57,11 @@ public class DataProcess {
                     hashMap.put(devEUI, false);
                 }
                 //分析并存储数据
-                hexStringAnalysis(buf.toString(), devEUI, date);
+                try {
+                    hexStringAnalysis(buf.toString(), devEUI, date);
+                }catch (Exception e){
+                    System.out.println("有异常");
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -65,8 +69,9 @@ public class DataProcess {
     }
 
 
-    public static void hexStringAnalysis(String hexstr, String devEUI, String date) {
+    public static void hexStringAnalysis(String hexstr, String devEUI, String date) throws Exception {
         //CRC 校验
+
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
         String forcheck = hexstr.substring(0, hexstr.length() - 4);
         if (CRC16Modbus.checkCRC16(forcheck, CRCstr)) {
