@@ -11,6 +11,7 @@ import com.example.demo.Utils.MQTTUtil;
 import com.example.demo.Utils.RealTimeUtil;
 import com.example.demo.Utils.SpringBeanFactoryUtil;
 import org.fusesource.mqtt.client.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -240,7 +241,7 @@ public class WebSocketServer {
 //                        time = 0;
 
                         //处理data
-                        List<HashMap<String, String>> data = DataProcess.realTimeDataHander(new String(message.getPayload()));
+                        List<JSONObject> data = DataProcess.realTimeDataHander(new String(message.getPayload()));
                         try {
                             if (data != null) {
                                 sendtoUser(data.toString(), userid);
