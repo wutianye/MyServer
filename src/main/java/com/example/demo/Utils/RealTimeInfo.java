@@ -1,5 +1,8 @@
 package com.example.demo.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 public class RealTimeInfo {
@@ -62,13 +65,28 @@ public class RealTimeInfo {
         this.value = value;
     }
 
-    public HashMap<String, String> toHashMap() {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        hashMap.put("date", this.date);
-        hashMap.put("devEUI", this.devEUI);
-        hashMap.put("typeid", this.typeid);
-        hashMap.put("choice", this.choice);
-        hashMap.put("value", this.value);
-        return hashMap;
+//    public HashMap<String, String> toHashMap() {
+//        HashMap<String, String> hashMap = new HashMap<String, String>();
+//        hashMap.put("date", this.date);
+//        hashMap.put("devEUI", this.devEUI);
+//        hashMap.put("typeid", this.typeid);
+//        hashMap.put("choice", this.choice);
+//        hashMap.put("value", this.value);
+//        return hashMap;
+//    }
+
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("date", this.date);
+            jsonObject.put("devEUI", this.devEUI);
+            jsonObject.put("typeid", this.typeid);
+            jsonObject.put("choice", this.choice);
+            jsonObject.put("value", this.value);
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

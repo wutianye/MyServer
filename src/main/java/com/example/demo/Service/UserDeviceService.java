@@ -2,6 +2,7 @@ package com.example.demo.Service;
 
 import com.example.demo.Entity.UserDevice;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface UserDeviceService {
@@ -14,5 +15,9 @@ public interface UserDeviceService {
 
     //获取给定用户的所有设备信息
     List<UserDevice> findAllByUserid(String userid);
+
+    // 获得设备-传感器列表详细信息，设备只需要获得传感器数量，不要求得到具体传感器值
+
+    HashMap getDSList(String userId);
 
 }

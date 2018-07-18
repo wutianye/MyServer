@@ -4,7 +4,6 @@ import com.example.demo.Entity.DeviceSensor;
 import com.example.demo.Entity.SensorType;
 import com.example.demo.Service.DeviceSensorService;
 import com.example.demo.Service.SensorTypeService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

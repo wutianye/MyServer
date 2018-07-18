@@ -66,8 +66,8 @@ public class DataProcess {
     public static void hexStringAnalysis(String hexstr, String devEUI, String date) {
         if (hexstr.length() <= 4 ) {
             System.out.println("数据格式有误！");
-            return;
 //            throw new IndexOutOfBoundsException();
+            return ;
         }
         //CRC 校验
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
@@ -151,7 +151,7 @@ public class DataProcess {
     }
 
     //实时数据处理
-    public static List<HashMap<String, String>> realTimeDataHander(String payload) {
+    public static List<JSONObject> realTimeDataHander(String payload) {
         try {
             JSONObject jsonObject = new JSONObject(payload);
             String devEUI = jsonObject.getString("devEUI");
@@ -175,10 +175,10 @@ public class DataProcess {
     }
 
     //实时数据分析
-    public static List<HashMap<String, String>> realTimeDataAnalysis(String hexstr, String devEUI, String date) {
+    public static List<JSONObject> realTimeDataAnalysis(String hexstr, String devEUI, String date) {
         if (hexstr.length() <= 4 ) {
             System.out.println("数据格式有误！");
-            throw new IndexOutOfBoundsException();
+            return null;
         }
         //CRC 校验
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
@@ -190,7 +190,7 @@ public class DataProcess {
             return null;
         }
 
-        List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
+        List<JSONObject> jsonObjectList = new ArrayList<JSONObject>();
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {
             if (index + 4 >= forcheck.length()) {
@@ -207,7 +207,7 @@ public class DataProcess {
                         String choice = "wind";
                         String value = "" + fengsu;
                         RealTimeInfo realTimeInfo = new RealTimeInfo(date, devEUI, typeid, choice, value);
-                        hashMapList.add(realTimeInfo.toHashMap());
+                        jsonObjectList.add(realTimeInfo.toJSONObject());
                     }
                     break;
                 case "02":
@@ -222,9 +222,9 @@ public class DataProcess {
                         RealTimeInfo realTimeInfo_qiti = new RealTimeInfo(date, devEUI, typeid, "gas", String.valueOf(qiti));
                         RealTimeInfo realTimeInfo_wendu = new RealTimeInfo(date, devEUI, typeid, "temperature", String.valueOf(wendu));
                         RealTimeInfo realTimeInfo_shidu = new RealTimeInfo(date, devEUI, typeid, "humidity", String.valueOf(shidu));
-                        hashMapList.add(realTimeInfo_qiti.toHashMap());
-                        hashMapList.add(realTimeInfo_wendu.toHashMap());
-                        hashMapList.add(realTimeInfo_shidu.toHashMap());
+                        jsonObjectList.add(realTimeInfo_qiti.toJSONObject());
+                        jsonObjectList.add(realTimeInfo_wendu.toJSONObject());
+                        jsonObjectList.add(realTimeInfo_shidu.toJSONObject());
                     }
                     break;
                 default:
@@ -232,7 +232,7 @@ public class DataProcess {
             }
             index += length * 2;
         }
-        return hashMapList;
+        return jsonObjectList;
     }
 
     //构造返回的hashMap<String, String>

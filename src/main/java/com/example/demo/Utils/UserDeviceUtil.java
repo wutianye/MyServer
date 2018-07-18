@@ -37,6 +37,7 @@ public class UserDeviceUtil {
         return list;
     }
 
+
     //list<UserDevice>转list<HashMap<String,String>>
     public static List<HashMap<String,String>> toHashlist(List<UserDevice> userDeviceList) {
         List<HashMap<String, String>> hashMapList= new ArrayList<HashMap<String,String>>();
