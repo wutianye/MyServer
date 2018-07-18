@@ -64,7 +64,7 @@ public class DeviceSensorUtil {
         for (DeviceSensor deviceSensor : deviceSensorList) {
             if (deviceSensor.getTypeid().equals("02")){
                 //三合一的传感器
-                String[] choice = {"qiti","wendu","shidu"};
+                String[] choice = {"wendu","shidu", "qiti"};
                 String[] name = {"temperature","humidity","gas"};
                 String[] label = {"温度","湿度","气体浓度"};
                 SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
@@ -102,6 +102,8 @@ public class DeviceSensorUtil {
             info.setInfo("状态未改变！");
             return info;
         }
+        //指令下发
+        /*----------*/
         deviceSensorService.insert(deviceSensor1);
         deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
         if (deviceSensor1.getState() == deviceSensor.getState()) {

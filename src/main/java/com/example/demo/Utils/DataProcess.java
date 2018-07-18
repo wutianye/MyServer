@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-
+import java.util.*;
 
 
 public class DataProcess {
@@ -28,6 +25,7 @@ public class DataProcess {
     public static HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
 
     static final Base64.Decoder decoder = Base64.getDecoder();
+    static final Base64.Encoder encoder = Base64.getEncoder();
 
     public static void getDataFromTopicAndPayLoad(String topic, String payload) {
         String str = topic.substring(topic.length() - 2, topic.length());
@@ -44,7 +42,7 @@ public class DataProcess {
                 }
                 System.out.println(buf.toString());
 
-                String date = getNowDate();
+                String date = getNowDate("yyyyMMddHH");
                 if (!date.equals(currentTime)) {
                     currentTime = date;
                     hashMap.clear();
@@ -66,6 +64,10 @@ public class DataProcess {
 
 
     public static void hexStringAnalysis(String hexstr, String devEUI, String date) {
+        if (hexstr.length() <= 4 ) {
+            System.out.println("数据格式有误！");
+            throw new IndexOutOfBoundsException();
+        }
         //CRC 校验
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
         String forcheck = hexstr.substring(0, hexstr.length() - 4);
@@ -147,9 +149,102 @@ public class DataProcess {
         hashMap.put(devEUI, result);
     }
 
-    public static String getNowDate() {
+    //实时数据处理
+    public static List<HashMap<String, String>> realTimeDataHander(String payload) {
+        try {
+            JSONObject jsonObject = new JSONObject(payload);
+            String devEUI = jsonObject.getString("devEUI");
+
+            //byte[] 转 hex string
+            byte[] bytes = decoder.decode(jsonObject.getString("data"));
+            StringBuilder buf = new StringBuilder();
+            for (byte b : bytes) {
+                buf.append(String.format("%02x", new Integer(b & 0xff)));
+            }
+            System.out.println(buf.toString());
+
+            String date = getNowDate("yyyyMMddHHmmss");
+
+            //分析处理数据
+            return realTimeDataAnalysis(buf.toString(), devEUI, date);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //实时数据分析
+    public static List<HashMap<String, String>> realTimeDataAnalysis(String hexstr, String devEUI, String date) {
+        if (hexstr.length() <= 4 ) {
+            System.out.println("数据格式有误！");
+            throw new IndexOutOfBoundsException();
+        }
+        //CRC 校验
+        String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
+        String forcheck = hexstr.substring(0, hexstr.length() - 4);
+        if (CRC16Modbus.checkCRC16(forcheck, CRCstr)) {
+            System.out.println("CRC校验成功！");
+        } else {
+            System.out.println("CRC校验失败！");
+            return null;
+        }
+
+        List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
+        //分析数据
+        for (int index = 0; index < forcheck.length(); ) {
+            if (index + 4 >= forcheck.length()) {
+                throw new IndexOutOfBoundsException();
+            }
+            String typeid = forcheck.substring(index, index + 2);
+            int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
+            index += 4;
+            switch (typeid) {
+                case "01":
+                    if (length == 2 && !forcheck.substring(index, index+4).equals("ffff")) {
+                        float fengsu = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 100.0);
+                        System.out.println("风速：" + fengsu + "m/s");
+                        String choice = "wind";
+                        String value = "" + fengsu;
+                        RealTimeInfo realTimeInfo = new RealTimeInfo(date, devEUI, typeid, choice, value);
+                        hashMapList.add(realTimeInfo.toHashMap());
+                    }
+                    break;
+                case "02":
+                    if (length == 6 && !forcheck.substring(index, index + 4).equals("ffff") &&
+                            !forcheck.substring(index + 4, index + 8).equals("ffff") &&
+                            !forcheck.substring(index + 8, index + 12).equals("ffff")) {
+                        float qiti = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 10.0);
+                        float wendu = (float) (Integer.parseInt(forcheck.substring(index + 4, index + 8), 16) / 10.0);
+                        float shidu = (float) (Integer.parseInt(forcheck.substring(index + 8, index + 12), 16) / 100.0);
+                        System.out.println("气体浓度：" + qiti + "\n温度：" + wendu + "0C\n湿度：" + shidu);
+
+                        RealTimeInfo realTimeInfo_qiti = new RealTimeInfo(date, devEUI, typeid, "gas", String.valueOf(qiti));
+                        RealTimeInfo realTimeInfo_wendu = new RealTimeInfo(date, devEUI, typeid, "temperature", String.valueOf(wendu));
+                        RealTimeInfo realTimeInfo_shidu = new RealTimeInfo(date, devEUI, typeid, "humidity", String.valueOf(shidu));
+                        hashMapList.add(realTimeInfo_qiti.toHashMap());
+                        hashMapList.add(realTimeInfo_wendu.toHashMap());
+                        hashMapList.add(realTimeInfo_shidu.toHashMap());
+                    }
+                    break;
+                default:
+                    return null;
+            }
+            index += length * 2;
+        }
+        return hashMapList;
+    }
+
+    //构造返回的hashMap<String, String>
+    public static HashMap<String, String> toHashMap() {
+        return null;
+    }
+
+
+    //pattern : yyyyMMddHH   yyyyMMddHHmmsss
+    public static String getNowDate(String pattern) {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH");
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
     }
+
 }
