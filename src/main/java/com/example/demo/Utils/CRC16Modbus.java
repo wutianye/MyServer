@@ -31,7 +31,7 @@ public class CRC16Modbus {
      * @param hexString,16进制的字符串
      * @return 转换成的字节数组
      */
-    private static byte[] HexString2Bytes(String hexString){
+    public static byte[] HexString2Bytes(String hexString){
         byte[]  destByte = new byte[hexString.length()/2];
         int j=0;
         for (int i=0; i<destByte.length;i++){
@@ -54,5 +54,17 @@ public class CRC16Modbus {
         String  strCRC = getCRC2(bytes);
         //防止hex大小写问题
         return  (strCRC != null && strCRC.trim().toLowerCase().equals(CRC.toLowerCase().trim()));
+    }
+
+    /**
+     * 生成CRC
+     */
+    public static String makeCRC(String hexString) {
+        byte[] bytes = HexString2Bytes(hexString);
+        String strCRC = getCRC2(bytes);
+        if (strCRC != null) {
+            return strCRC.toLowerCase();
+        }
+        return null;
     }
 }
