@@ -12,4 +12,8 @@ public interface DeviceSensorJpaRepository extends JpaRepository<DeviceSensor, S
     List<DeviceSensor> findDeviceSensorsByDevEUI(String devEUI);
 
     DeviceSensor findDeviceSensorByDevEUIAndTypeid(String devEUI, String typeid);
+
+    void deleteAllByDevEUI(String devEUI);
+
+    void deleteByDevEUIAndTypeid(String devEUI, String typeid);
 }

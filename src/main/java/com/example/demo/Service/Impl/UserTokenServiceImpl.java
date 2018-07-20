@@ -15,6 +15,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public void insert(UserToken userToken) {
         userTokenJpaRepository.save(userToken);
+        userTokenJpaRepository.flush();
     }
 
     @Override
@@ -30,5 +31,11 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public UserToken findByUserid(String userid) {
         return userTokenJpaRepository.findByUserid(userid);
+    }
+
+    @Override
+    public void deleteByUserid(String userid) {
+        userTokenJpaRepository.deleteById(userid);
+        userTokenJpaRepository.flush();
     }
 }

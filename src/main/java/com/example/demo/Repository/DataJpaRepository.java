@@ -14,4 +14,8 @@ public interface DataJpaRepository extends JpaRepository<Data, String>{
     List<Data> findAllByDateLikeAndDevEUIAndTypeid(String datepattern, String devEUI, String typeid);
 
     List<Data> findAllByDevEUIAndTypeidAndDateBetween(String devEUI, String typeid, String date1, String date2);
+
+    void deleteAllByDevEUI(String devEUI);
+
+    void deleteAllByDevEUIAndTypeid(String devEUI, String typeid);
 }

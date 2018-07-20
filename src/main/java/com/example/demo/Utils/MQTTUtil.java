@@ -119,6 +119,14 @@ public class MQTTUtil {
                 }
                 break;
             case "rstate":
+                String result = DataProcess.rstateHander(new String(message.getPayload()));
+                if (result == null) {
+                    info.setResult(false);
+                    info.setInfo("rstate处理异常！");
+                } else {
+                    info.setResult(true);
+                    info.setInfo(result);
+                }
                 break;
             default:
                 info.setResult(false);

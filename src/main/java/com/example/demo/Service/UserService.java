@@ -20,4 +20,7 @@ public interface UserService {
 
     Boolean modifyPassword();
 
+    //根据userid删除一条用户的信息
+    void deleteByUserid(String userid);
+
 }

@@ -15,4 +15,7 @@ public interface UserTokenService {
     //获取一条数据
     UserToken findByUserid(String userid);
 
+    //根据userid删除一条数据
+    void deleteByUserid(String userid);
+
 }

@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void insert(User user) {
         userJpaRepository.save(user);
+        userJpaRepository.flush();
     }
 
     @Override
@@ -53,5 +54,11 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
+    //根据userid删除用户数据
+    @Override
+    public void deleteByUserid(String userid) {
+        userJpaRepository.deleteById(userid);
+        userJpaRepository.flush();
+    }
 
 }

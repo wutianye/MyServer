@@ -102,11 +102,8 @@ public class DataProcess {
             return ;
         }
 
-        if (forcheck.length() <= 6) {
-//            throw new IndexOutOfBoundsException();
-            return;
-        }
         String type = forcheck.substring(0, 2);
+        System.out.println("type:" + type);
         if (type.equals(Instructions.UPLINK_CONFIGURE)) {
             Runnable thread = new Runnable() {
                 @Override
@@ -502,6 +499,58 @@ public class DataProcess {
 
     }
 
+    //继电器状态处理
+    public static String rstateHander(String payload) {
+        try {
+            JSONObject jsonObject = new JSONObject(payload);
+
+            //byte[] 转 hex string
+            byte[] bytes = decoder.decode(jsonObject.getString("data"));
+            StringBuilder buf = new StringBuilder();
+            for (byte b : bytes) {
+                buf.append(String.format("%02x", new Integer(b & 0xff)));
+            }
+            System.out.println(buf.toString());
+            return rstateAnalysis(buf.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //继电器状态结果分析
+    public static String rstateAnalysis(String hexstr) {
+        if (hexstr.length() <= 4 ) {
+            System.out.println("数据格式有误！");
+            return null;
+        }
+        //CRC 校验
+        String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
+        String forcheck = hexstr.substring(0, hexstr.length() - 4);
+        if (CRC16Modbus.checkCRC16(forcheck, CRCstr)) {
+            System.out.println("CRC校验成功！");
+        } else {
+            System.out.println("CRC校验失败！");
+            return null;
+        }
+        System.out.println("forcheck:" + forcheck);
+        //判断字段长度,rstate字段e3开头，后面跟结果如ff
+        if (forcheck.length() != 4) {
+            return null;
+        }
+        System.out.println("e3开头，没毛病");
+        String type = forcheck.substring(0, 2);
+
+        //判断是否为rstate
+        if (!type.equals(Instructions.UPLINK_RELAY_STATE)) {
+            return null;
+        }
+        String result = forcheck.substring(2, forcheck.length());
+        System.out.println("result :" + result);
+        //hexstr转二进制str，如ff转11111111
+        return hexString2binaryString(result);
+    }
+
     //构造下发配置指令
     public static String makeConfigureInstruction(List<DeviceSensor> deviceSensorList) {
         String instruction = Instructions.DOWNLINK_SENSOR_CONFIGURE;
@@ -527,6 +576,25 @@ public class DataProcess {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf.format(date);
+    }
+
+    //hexstr 转 二进制str
+    public static String hexString2binaryString(String hexString) {
+        if (StringUtil.isEmpty(hexString)) {
+            return null;
+        }
+        String binaryString = "";
+        for (int i = 0; i < hexString.length(); i++) {
+            //截取hexStr的一位
+            String hex = hexString.substring(i, i + 1);
+            //通过toBinaryString将十六进制转为二进制
+            String binary = Integer.toBinaryString(Integer.parseInt(hex, 16));
+            //因为高位0会被舍弃，先补上4个0
+            String tmp = "0000" + binary;
+            //取最后4位，将多补的0去掉
+            binaryString += tmp.substring(tmp.length() - 4);
+        }
+        return binaryString;
     }
 
 }

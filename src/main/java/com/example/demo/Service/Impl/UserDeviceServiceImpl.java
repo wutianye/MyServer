@@ -27,6 +27,7 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     @Override
     public void insert(UserDevice userDevice) {
         userDeviceJpaRepository.save(userDevice);
+        userDeviceJpaRepository.flush();
     }
 
     @Override
@@ -72,6 +73,12 @@ public class UserDeviceServiceImpl implements UserDeviceService{
             res.put("desensor",desensor); // 数据
         }
         return res;
+    }
+
+    @Override
+    public void deleteByUserid(String userid) {
+        userDeviceJpaRepository.deleteAllByUserid(userid);
+        userDeviceJpaRepository.flush();
     }
 
 }
