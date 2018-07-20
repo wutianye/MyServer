@@ -111,4 +111,30 @@ public class UserController {
         return new TMessage(TMessage.CODE_SUCCESS,"退出成功");
     }
 
+    @GetMapping("/user/allUserInfo")
+    public TMessage getAllUserInfo(@RequestAttribute("currentUserid") String userid){ //获得用户的信息
+
+        String role;
+        if (userid != null) {
+            User user = userServiceImpl.findByUserid(userid);// 获得到用户的id
+            if (user != null) {
+                role = user.getFlag();
+                if (!role.equals("admin"))
+                        return new TMessage(TMessage.CODE_FAILURE, "用户身份异常，不为admin用户");
+                else {
+                    return  new TMessage(TMessage.CODE_SUCCESS,"返回用户信息成功，包含用户的姓名和角色", userServiceImpl.getAllUserInfo(userid));
+                }
+            }
+        }
+        return new TMessage(TMessage.CODE_SUCCESS,"请重新登陆");
+    }
+
+    @PostMapping("/user/modifyPassword")
+
+    // 修改用户密码
+    public TMessage modifyPassword(@RequestAttribute("currentUserid") String userid){
+
+        return  null;
+    }
+
 }

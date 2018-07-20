@@ -12,6 +12,8 @@ public class RealTimeInfo {
     private String typeid;
     private String choice;
     private String value;
+    private String time;
+
 
     public String getDate() {
         return date;
@@ -63,6 +65,7 @@ public class RealTimeInfo {
         this.typeid = typeid;
         this.choice = choice;
         this.value = value;
+        this.time = date;
     }
 
 //    public HashMap<String, String> toHashMap() {
