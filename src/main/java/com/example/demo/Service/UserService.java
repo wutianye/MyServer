@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.Entity.User;
+import com.example.demo.Utils.TMessage;
 
 import java.util.HashMap;
 
@@ -18,6 +19,6 @@ public interface UserService {
 
     HashMap getAllUserInfo(String userId);
 
-    Boolean modifyPassword();
+    TMessage modifyPassword(String userId, String modUserId, String password);
 
 }

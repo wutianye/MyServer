@@ -3,6 +3,7 @@ package com.example.demo.Service.Impl;
 import com.example.demo.Entity.User;
 import com.example.demo.Repository.UserJpaRepository;
 import com.example.demo.Service.UserService;
+import com.example.demo.Utils.TMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,10 +48,19 @@ public class UserServiceImpl implements UserService{
         return res;
     }
 
-    // 修改密码
+    // 修改密码, 用于管理员修改密码
     @Override
-    public Boolean modifyPassword() {
-        return null;
+    public TMessage modifyPassword(String userId ,String modUserId, String password) {
+
+        User user = userJpaRepository.findUserByUserid(userId); // 查找user
+        if (user == null) return new TMessage(TMessage.CODE_FAILURE, "token过期，请重新登陆再次请求");
+        if (!user.getFlag().equals("admin")) return  new TMessage(TMessage.CODE_FAILURE, "您没有权限修改别人的密码");
+        User modUser = userJpaRepository.findUserByUserid(modUserId);
+        if (modUser == null) return new TMessage(TMessage.CODE_FAILURE, "您要修改密码的用户不存在");
+        if (modUser.getFlag().equals("admin")) return  new TMessage(TMessage.CODE_FAILURE, "您不可以修改管理员的密码");
+        modUser.setPassword(password); // 修改密码
+        userJpaRepository.saveAndFlush(modUser); // 修改密码成功
+        return new TMessage(TMessage.CODE_SUCCESS,"修改密码成功");
     }
 
 
