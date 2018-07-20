@@ -36,17 +36,16 @@ public class MySecondRunner implements CommandLineRunner{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //			Topic[] topics = {new Topic("application/#", QoS.AT_LEAST_ONCE)};
+        Topic[] topics = {new Topic("application/2/device/+/rx", QoS.AT_LEAST_ONCE)};
+//            Topic[] topics = {new Topic("application/5/device/+/rx", QoS.AT_LEAST_ONCE)};
+        try {
+            byte[] qoses = connection.subscribe(topics);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("mqtt连接成功！订阅application/2/device/+/rx：");
         while(true) {
-
-//			Topic[] topics = {new Topic("application/#", QoS.AT_LEAST_ONCE)};
-            Topic[] topics = {new Topic("application/2/device/+/rx", QoS.AT_LEAST_ONCE)};
-//            Topic[] topics = {new Topic("application/5/device/+/rx", QoS.AT_LEAST_ONCE)};
-            try {
-                byte[] qoses = connection.subscribe(topics);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             Message message = null;
             try {
                 message = connection.receive();
@@ -58,7 +57,6 @@ public class MySecondRunner implements CommandLineRunner{
             // process the message then:
             DataProcess.getDataFromTopicAndPayLoad(message.getTopic(), new String(message.getPayload()));
             message.ack();
-
         }
     }
 }
