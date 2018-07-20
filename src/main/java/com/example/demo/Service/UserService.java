@@ -21,4 +21,6 @@ public interface UserService {
 
     TMessage modifyPassword(String userId, String modUserId, String password);
 
+    TMessage modifyUserRole(String userId, String modUserId, String role);
+
 }
