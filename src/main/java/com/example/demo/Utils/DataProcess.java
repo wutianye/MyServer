@@ -78,7 +78,16 @@ public class DataProcess {
             System.out.println("CRC校验失败！");
             return ;
         }
+        if (forcheck.length() <= 6) {
+            throw new IndexOutOfBoundsException();
+        }
+        String type = forcheck.substring(0, 2);
 
+        if (!type.equals(Instructions.UPLINK_SENSOR_DATA)) {
+            return;
+        }
+
+        forcheck = forcheck.substring(2, forcheck.length());
         boolean result = true;
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {
@@ -89,7 +98,7 @@ public class DataProcess {
             int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
             index += 4;
             switch (typeid) {
-                case "01":
+                case Instructions.SENSOR_WIND:
                     if (length == 2 && !forcheck.substring(index, index+4).equals("ffff")) {
                         float fengsu = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 100.0);
                         System.out.println("风速：" + fengsu + "m/s");
@@ -114,7 +123,7 @@ public class DataProcess {
                         result = false;
                     }
                     break;
-                case "02":
+                case Instructions.SENSOR_GTH:
                     if (length == 6 && !forcheck.substring(index, index + 4).equals("ffff") &&
                             !forcheck.substring(index + 4, index + 8).equals("ffff") &&
                             !forcheck.substring(index + 8, index + 12).equals("ffff")){
@@ -190,6 +199,16 @@ public class DataProcess {
             return null;
         }
 
+        //判断是否为传感器数据
+        if (forcheck.length() <= 6) {
+            throw new IndexOutOfBoundsException();
+        }
+        String type = forcheck.substring(0, 2);
+
+        if (!type.equals(Instructions.UPLINK_SENSOR_DATA)) {
+            return null;
+        }
+
         List<JSONObject> jsonObjectList = new ArrayList<JSONObject>();
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {
@@ -200,7 +219,7 @@ public class DataProcess {
             int length = Integer.parseInt(forcheck.substring(index + 2, index + 4), 16);
             index += 4;
             switch (typeid) {
-                case "01":
+                case Instructions.SENSOR_WIND:
                     if (length == 2 && !forcheck.substring(index, index+4).equals("ffff")) {
                         float fengsu = (float) (Integer.parseInt(forcheck.substring(index, index + 4), 16) / 100.0);
                         System.out.println("风速：" + fengsu + "m/s");
@@ -210,7 +229,7 @@ public class DataProcess {
                         jsonObjectList.add(realTimeInfo.toJSONObject());
                     }
                     break;
-                case "02":
+                case Instructions.SENSOR_GTH:
                     if (length == 6 && !forcheck.substring(index, index + 4).equals("ffff") &&
                             !forcheck.substring(index + 4, index + 8).equals("ffff") &&
                             !forcheck.substring(index + 8, index + 12).equals("ffff")) {
