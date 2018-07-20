@@ -62,7 +62,31 @@ public class UserDeviceController {
             return  new TMessage(TMessage.CODE_SUCCESS,"获取设备列表成功",list);
         }
         return new TMessage(TMessage.CODE_FAILURE, "获取设备列表失败",null);
-
     }
+    // 获得不同设别下所拥有的设备数
 
+    /* *
+     *
+     * 功能描述:
+     *
+     * @param: [userid]
+     * @return: com.example.demo.Utils.TMessage
+     * @auther: liuyunxing
+     * @Description //TODO
+     * @date: 2018/7/18 14:14
+     */
+
+    @CrossOrigin
+    @GetMapping("/getDSList")
+    @ResponseBody
+    public TMessage getDSList(@RequestAttribute("currentUserid") String userid){
+
+        HashMap res = userDeviceService.getDSList(userid); // 获得结果列表
+        if (res != null && res.size() != 0){
+            return new TMessage(TMessage.CODE_SUCCESS, "获得数据成功", res);
+        }else if (res !=  null) {
+            return  new TMessage(TMessage.CODE_FAILURE,"您还没有设备,快去添加吧");
+        }
+        return  new TMessage(TMessage.CODE_FAILURE,"获取数据失败");
+    }
 }

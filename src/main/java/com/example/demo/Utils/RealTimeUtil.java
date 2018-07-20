@@ -13,27 +13,27 @@ public class RealTimeUtil {
 
     public static HashMap<String, Boolean> userState = new HashMap<String, Boolean>();
 
-    //根据websocket接入的用户去订阅消息
-    public static void subscribeByUserid(String userid) {
-        List<UserDevice> userDeviceList = userDeviceService.findAllByUserid(userid);
-        changeUserState(userid, true);
-        for (UserDevice userDevice : userDeviceList) {
-            String topic = MQTTUtil.makeTopic(userDevice.getDevEUI(), "rx");
-            MQTTUtil.subscribe(topic, userid);
-        }
-    }
-
-    //用户关闭webSocket连接，取消之前的所有订阅
-    public static void cancleSubscribe(String userid) {
-        changeUserState(userid, false);
-    }
-
-    //webSocket在线用户状态
-    public static void changeUserState(String userid, Boolean state){
-        userState.put(userid, state);
-//        if (!userState.get(userid)) {
-//            userState.remove(userid);
+//    //根据websocket接入的用户去订阅消息
+//    public static void subscribeByUserid(String userid) {
+//        List<UserDevice> userDeviceList = userDeviceService.findAllByUserid(userid);
+//        changeUserState(userid, true);
+//        for (UserDevice userDevice : userDeviceList) {
+//            String topic = MQTTUtil.makeTopic(userDevice.getDevEUI(), "rx");
+//            MQTTUtil.subscribe(topic, userid);
 //        }
-    }
+//    }
+//
+//    //用户关闭webSocket连接，取消之前的所有订阅
+//    public static void cancleSubscribe(String userid) {
+//        changeUserState(userid, false);
+//    }
+//
+//    //webSocket在线用户状态
+//    public static void changeUserState(String userid, Boolean state){
+//        userState.put(userid, state);
+////        if (!userState.get(userid)) {
+////            userState.remove(userid);
+////        }
+//    }
 
 }

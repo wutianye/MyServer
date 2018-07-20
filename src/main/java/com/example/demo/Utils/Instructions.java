@@ -14,6 +14,9 @@ public class Instructions {
     //继电器编号
     final public static String RELAY_01 = "01";//8路继电器
 
+    //继电器状态查询指令码
+    final public static String RELAY_STATE_GET = "";
+
 
     //下发前置字段
     final public static String DOWNLINK_SENSOR_CONFIGURE = "f1";//下发传感器配置
@@ -25,6 +28,17 @@ public class Instructions {
     final public static String UPLINK_ACK = "e1";//上传回应的ACK
     final public static String UPLINK_SENSOR_DATA = "e2";//上传传感器数据
     final public static String UPLINK_RELAY_STATE = "e3";//上传继电器状态
+    final public static String UPLINK_CONFIGURE = "e4";//上传指令，请求配置
+
+
+    //配置指令（不含CRC）
+    //关闭所有传感器（需要加上下发配置头）
+    final public static String CONFIGURE_CLOSEALL = "ff";
+    //仅打开风速传感器（中间一串是485命令）
+    final public static String CONFIGURE_OPEN_WIND = SENSOR_WIND + "0103002a0001" + "ff";
+    //仅打开温湿度氨气三合一传感器
+    final public static String CONFIGURE_OPEN_GTH = SENSOR_GTH + "020300200003" + "ff";
+    //打开温湿度氨气三合一和风速传感器，可通过上述两个指令拼接
 
 
 }
