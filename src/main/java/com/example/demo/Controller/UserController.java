@@ -137,4 +137,9 @@ public class UserController {
       return  userService.modifyPassword(userid,modUserId, password); // 修改密码
     }
 
+    @PostMapping("/user/modifyRole")
+    public TMessage modifyRole(@RequestAttribute("currentUserid") String userid, String modUserId, String role){
+        return  userService.modifyUserRole(userid, modUserId, role);
+    }
+
 }
