@@ -31,6 +31,11 @@ public class StringUtil {
         return Arrays.asList(validRoles).contains(role.trim()); // 检测是否为正确合法身份
     }
 
+    public static boolean judgValidRole(String[] validRoles, String role){
+        return Arrays.asList(validRoles).contains(role.trim()); // 检测是否为正确合法身份
+    }
+
+
     /*
         public static void main(String[] args) throws IOException {
         System.out.println(StringUtil.isEmpty("    "));

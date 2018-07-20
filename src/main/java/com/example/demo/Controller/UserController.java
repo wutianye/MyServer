@@ -133,9 +133,14 @@ public class UserController {
     @PostMapping("/user/modifyPassword")
 
     // 修改用户密码
-    public TMessage modifyPassword(@RequestAttribute("currentUserid") String userid){
+    public TMessage modifyPassword(@RequestAttribute("currentUserid") String userid, String modUserId,String password){
 
-        return  null;
+      return  userService.modifyPassword(userid,modUserId, password); // 修改密码
+    }
+
+    @PostMapping("/user/modifyRole")
+    public TMessage modifyRole(@RequestAttribute("currentUserid") String userid, String modUserId, String role){
+        return  userService.modifyUserRole(userid, modUserId, role);
     }
 
     //删除用户
