@@ -23,4 +23,7 @@ public interface UserDeviceService {
     //根据userid删除数据
     void deleteByUserid(String userid);
 
+    //根据devEUI删除数据
+    void deleteBydevEUI(String devEUI);
+
 }

@@ -27,4 +27,10 @@ public interface DataService {
     //根据devEUI、typeid删除数据
     void deleteBydevEUIAndTypeid(String devEUI, String typeid);
 
+    //根据devEUI、typeid查询数据
+    List<Data> findBydevEUIAndTypeid(String devEUI, String typeid);
+
+    //根据devEUI查询数据
+    List<Data> findBydevEUI(String devEUI);
+
 }

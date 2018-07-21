@@ -4,6 +4,7 @@ package com.example.demo.Controller;
 import com.example.demo.Service.DeviceRelayService;
 import com.example.demo.Service.RelaySwitchService;
 import com.example.demo.Service.RelayTypeService;
+import com.example.demo.Utils.DeleteUtil;
 import com.example.demo.Utils.DeviceRelayUtil;
 import com.example.demo.Utils.TMessage;
 import io.swagger.annotations.ApiOperation;
@@ -77,5 +78,16 @@ public class DeviceRelayController {
     @ResponseBody
     public String changeRelaySwitch(@RequestParam(value = "devEUI", required = true)String devEUI, @RequestParam(value = "switchId", required = true) String switchId, @RequestParam(value = "state", required = true) String state) {
         return DeviceRelayUtil.changeRelaySwitch(devEUI, switchId, state).toJSONString();
+    }
+
+    /**
+     * 删除继电器
+     * 描述：删除给定的继电器
+     */
+    @ApiOperation(value = "删除继电器", notes = "删除给定的继电器")
+    @RequestMapping(value = "/deleteRelay", method = RequestMethod.POST)
+    @ResponseBody
+    public TMessage deleteDevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "relaytype", required = true) String relaytype) {
+        return DeleteUtil.deleteRelay(devEUI, relaytype);
     }
 }

@@ -80,4 +80,9 @@ public class UserDeviceServiceImpl implements UserDeviceService{
         userDeviceJpaRepository.flush();
     }
 
+    @Override
+    public void deleteBydevEUI(String devEUI) {
+        userDeviceJpaRepository.deleteByDevEUI(devEUI);
+    }
+
 }
