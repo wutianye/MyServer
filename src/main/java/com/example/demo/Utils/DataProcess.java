@@ -533,12 +533,10 @@ public class DataProcess {
             System.out.println("CRC校验失败！");
             return null;
         }
-        System.out.println("forcheck:" + forcheck);
         //判断字段长度,rstate字段e3开头，后面跟结果如ff
         if (forcheck.length() != 4) {
             return null;
         }
-        System.out.println("e3开头，没毛病");
         String type = forcheck.substring(0, 2);
 
         //判断是否为rstate

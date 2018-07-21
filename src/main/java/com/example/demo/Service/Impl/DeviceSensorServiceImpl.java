@@ -17,8 +17,7 @@ public class DeviceSensorServiceImpl implements DeviceSensorService{
 
     @Override
     public void insert(DeviceSensor deviceSensor) {
-        deviceSensorJpaRepository.save(deviceSensor);
-        deviceSensorJpaRepository.flush();
+        deviceSensorJpaRepository.saveAndFlush(deviceSensor);
     }
 
     @Override

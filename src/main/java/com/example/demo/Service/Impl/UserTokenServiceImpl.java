@@ -14,8 +14,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Override
     public void insert(UserToken userToken) {
-        userTokenJpaRepository.save(userToken);
-        userTokenJpaRepository.flush();
+        userTokenJpaRepository.saveAndFlush(userToken);
     }
 
     @Override

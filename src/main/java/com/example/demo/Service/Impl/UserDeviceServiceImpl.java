@@ -26,8 +26,7 @@ public class UserDeviceServiceImpl implements UserDeviceService{
 
     @Override
     public void insert(UserDevice userDevice) {
-        userDeviceJpaRepository.save(userDevice);
-        userDeviceJpaRepository.flush();
+        userDeviceJpaRepository.saveAndFlush(userDevice);
     }
 
     @Override

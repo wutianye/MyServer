@@ -15,8 +15,7 @@ public class DeviceRelayServiceImpl implements DeviceRelayService{
 
     @Override
     public void insert(DeviceRelay deviceRelay) {
-        deviceRelayJpaRepository.save(deviceRelay);
-        deviceRelayJpaRepository.flush();
+        deviceRelayJpaRepository.saveAndFlush(deviceRelay);
     }
 
     @Override

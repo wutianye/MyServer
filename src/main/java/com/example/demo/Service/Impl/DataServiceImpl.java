@@ -26,8 +26,7 @@ public class DataServiceImpl implements DataService{
 
     @Override
     public void insert(Data data) {
-        dataJpaRepository.save(data);
-        dataJpaRepository.flush();
+        dataJpaRepository.saveAndFlush(data);
     }
 
     @Override
