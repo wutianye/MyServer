@@ -52,10 +52,12 @@ public class DeviceRelayUtil {
         List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
         List<RelaySwitch> relaySwitchList = relaySwitchService.findByrelayType(relayType);
         //下发获取继电器状态指令，回复一个字符串如00000010，代表8位继电器当前开关状态
-        String states = downlinkInstruction(devEUI);
-        if (states == null) {
+        //注意：此时的states结果是逆序的，要转换一下
+        String state = downlinkInstruction(devEUI);
+        if (state == null) {
             return null;
         }
+        String states = new StringBuffer(state).reverse().toString();
         //处理二进制字符串
         //考虑到通用性，需要在DeviceRelay表中添加字段state，标识继电器当前能够使用的开关有哪些，本例为：01111111（待拓展）
         for (RelaySwitch relaySwitch : relaySwitchList) {

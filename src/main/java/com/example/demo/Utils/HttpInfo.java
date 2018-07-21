@@ -56,4 +56,9 @@ public class HttpInfo {
         }
         return true;
     }
+
+    public static boolean deleteDevice(String devEUI) {
+        requestURL = "https://www.liuyunxing.cn:8080/api/devices/" + devEUI;
+        return HttpHelper.ByDelete(requestURL, token);
+    }
 }

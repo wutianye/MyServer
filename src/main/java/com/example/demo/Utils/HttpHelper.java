@@ -6,9 +6,12 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 
@@ -78,7 +81,7 @@ public class HttpHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return msg;
+        return null;
     }
 
     //添加代码块3
@@ -146,6 +149,42 @@ public class HttpHelper {
             e.printStackTrace();
         }
         return msg;
+    }
+
+    public static boolean ByDelete(String requestURL, String token) {
+        try {
+
+            //添加代码块2  该部分必须在获取connection前调用
+            trustAllHttpsCertificates();
+            HostnameVerifier hv = new HostnameVerifier() {
+                public boolean verify(String urlHostName, SSLSession session) {
+                    return true;
+                }
+            };
+            HttpsURLConnection.setDefaultHostnameVerifier(hv);
+
+
+            URL url = new URL(requestURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            if (token != null) {
+                connection.setRequestProperty("Grpc-Metadata-Authorization", token); //向header里添加信息
+            }
+            connection.setRequestMethod("DELETE");
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.connect();
+
+            if (connection.getResponseCode() != 200) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
 

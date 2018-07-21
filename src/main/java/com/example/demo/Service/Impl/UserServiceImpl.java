@@ -25,8 +25,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void insert(User user) {
-        userJpaRepository.save(user);
-        userJpaRepository.flush();
+        userJpaRepository.saveAndFlush(user);
     }
 
     @Override

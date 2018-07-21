@@ -4,6 +4,7 @@ package com.example.demo.Controller;
 import com.example.demo.Entity.DeviceSensor;
 import com.example.demo.Service.DeviceSensorService;
 import com.example.demo.Service.SensorTypeService;
+import com.example.demo.Utils.DeleteUtil;
 import com.example.demo.Utils.DeviceSensorUtil;
 import com.example.demo.Utils.Info;
 import com.example.demo.Utils.TMessage;
@@ -77,6 +78,17 @@ public class DeviceSensorController {
     public String changesensor(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "state", required = true) String state) {
         DeviceSensor deviceSensor = new DeviceSensor(devEUI, typeid, state);
         return DeviceSensorUtil.updatestate(deviceSensorService, deviceSensor).toJSONString();
+    }
+
+    /**
+     * 删除传感器
+     * 描述：删除传感器及该传感器下所有有关信息
+     */
+    @ApiOperation(value = "删除传感器", notes = "删除传感器及该传感器下所有有关数据")
+    @RequestMapping(value = "/deleteSensor", method = RequestMethod.POST)
+    @ResponseBody
+    public TMessage deleteDevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid) {
+        return DeleteUtil.deleteSensor(devEUI, typeid);
     }
 
 }

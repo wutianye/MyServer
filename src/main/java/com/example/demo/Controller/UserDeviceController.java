@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Service.UserDeviceService;
+import com.example.demo.Utils.DeleteUtil;
 import com.example.demo.Utils.TMessage;
 import com.example.demo.Utils.UserDeviceUtil;
 import io.swagger.annotations.ApiOperation;
@@ -89,4 +90,16 @@ public class UserDeviceController {
         }
         return  new TMessage(TMessage.CODE_FAILURE,"获取数据失败");
     }
+
+    /**
+     * 删除设备
+     * 描述：删除设备及设备下所有有关信息
+     */
+    @ApiOperation(value = "删除设备", notes = "删除设备及设备下所有有关数据")
+    @RequestMapping(value = "/deleteDevice", method = RequestMethod.POST)
+    @ResponseBody
+    public TMessage deleteDevice(@RequestParam(value = "devEUI", required = true) String devEUI) {
+        return DeleteUtil.deleteDevice(devEUI);
+    }
+
 }

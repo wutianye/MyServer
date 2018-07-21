@@ -26,8 +26,7 @@ public class UserDeviceServiceImpl implements UserDeviceService{
 
     @Override
     public void insert(UserDevice userDevice) {
-        userDeviceJpaRepository.save(userDevice);
-        userDeviceJpaRepository.flush();
+        userDeviceJpaRepository.saveAndFlush(userDevice);
     }
 
     @Override
@@ -79,6 +78,11 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     public void deleteByUserid(String userid) {
         userDeviceJpaRepository.deleteAllByUserid(userid);
         userDeviceJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteBydevEUI(String devEUI) {
+        userDeviceJpaRepository.deleteByDevEUI(devEUI);
     }
 
 }
