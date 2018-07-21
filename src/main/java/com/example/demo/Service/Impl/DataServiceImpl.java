@@ -27,6 +27,7 @@ public class DataServiceImpl implements DataService{
     @Override
     public void insert(Data data) {
         dataJpaRepository.save(data);
+        dataJpaRepository.flush();
     }
 
     @Override
@@ -39,4 +40,15 @@ public class DataServiceImpl implements DataService{
         return dataJpaRepository.findAllByDevEUIAndTypeidAndDateBetween(devEUI, typeid, date1, date2);
     }
 
+    @Override
+    public void deleteBydevEUI(String devEUI) {
+        dataJpaRepository.deleteAllByDevEUI(devEUI);
+        dataJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteBydevEUIAndTypeid(String devEUI, String typeid) {
+        dataJpaRepository.deleteAllByDevEUIAndTypeid(devEUI, typeid);
+        dataJpaRepository.flush();
+    }
 }

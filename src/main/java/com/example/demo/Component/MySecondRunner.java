@@ -37,7 +37,7 @@ public class MySecondRunner implements CommandLineRunner{
             e.printStackTrace();
         }
         //			Topic[] topics = {new Topic("application/#", QoS.AT_LEAST_ONCE)};
-        Topic[] topics = {new Topic("application/2/device/+/rx", QoS.AT_LEAST_ONCE)};
+        Topic[] topics = {new Topic("application/2/device/004a770066003301/rx", QoS.AT_LEAST_ONCE)};
 //            Topic[] topics = {new Topic("application/5/device/+/rx", QoS.AT_LEAST_ONCE)};
         try {
             byte[] qoses = connection.subscribe(topics);

@@ -18,4 +18,10 @@ public interface DeviceSensorService {
     //根据devEUI、typeid获取对应的一条数据
     DeviceSensor findBydevEUIAndTypeid(String devEUI, String typeid);
 
+    //根据devEUI删除数据
+    void deleteBydevEUI(String devEUI);
+
+    //根据devEUI、typeid删除一条数据
+    void deleteBydevEUIAndTypeid(String devEUI, String typeid);
+
 }

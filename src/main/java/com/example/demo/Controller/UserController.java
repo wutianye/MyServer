@@ -7,6 +7,7 @@ import com.example.demo.Service.DataService;
 import com.example.demo.Service.Impl.UserServiceImpl;
 import com.example.demo.Service.UserService;
 import com.example.demo.Service.UserTokenService;
+import com.example.demo.Utils.Info;
 import com.example.demo.Utils.StringUtil;
 import com.example.demo.Utils.TMessage;
 import com.example.demo.Utils.UserUtil;
@@ -140,6 +141,14 @@ public class UserController {
     @PostMapping("/user/modifyRole")
     public TMessage modifyRole(@RequestAttribute("currentUserid") String userid, String modUserId, String role){
         return  userService.modifyUserRole(userid, modUserId, role);
+    }
+
+    //删除用户
+    @ApiOperation(value = "删除用户", notes = "管理员删除用户及用户下所有信息")
+    @RequestMapping(value = "/user/deleteUser", method = RequestMethod.POST)
+    @ResponseBody
+    public Info deleteUser(@RequestParam(value = "userid", required = true) String userid) {
+        return null;
     }
 
 }

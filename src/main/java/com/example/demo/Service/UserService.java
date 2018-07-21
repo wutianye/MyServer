@@ -23,4 +23,7 @@ public interface UserService {
 
     TMessage modifyUserRole(String userId, String modUserId, String role);
 
+    //根据userid删除一条用户的信息
+    void deleteByUserid(String userid);
+
 }

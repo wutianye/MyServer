@@ -20,4 +20,7 @@ public interface UserDeviceService {
 
     HashMap getDSList(String userId);
 
+    //根据userid删除数据
+    void deleteByUserid(String userid);
+
 }

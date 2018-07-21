@@ -15,7 +15,11 @@ public class Instructions {
     final public static String RELAY_01 = "01";//8路继电器
 
     //继电器状态查询指令码
-    final public static String RELAY_STATE_GET = "";
+    final public static String RELAY_STATE_GET = "00";
+
+    //继电器下各开关的状态码
+    final public static String RELAY_SWITCH_OPEN = "01";
+    final public static String RELAY_SWITCH_CLOSE = "00";
 
 
     //下发前置字段
