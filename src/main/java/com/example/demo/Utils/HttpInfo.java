@@ -11,11 +11,11 @@ public class HttpInfo {
     public static String getoptions;
 
     public static String login() {
-        requestURL = "https://www.liuyunxing.cn:8080/api/internal/login";
+        requestURL = Constants.HTTP_REQUESTURL_PREFIX + "/api/internal/login";
         JSONObject json = new JSONObject();
         try {
-            json.put("username", "test2");//指定与LoraServer连接的用户为test2
-            json.put("password", "123456");
+            json.put("username", Constants.HTTP_LORASERVER_USERNAME);
+            json.put("password", Constants.HTTP_LORASERVER_PASSWORD);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -38,13 +38,13 @@ public class HttpInfo {
     }
 
     public static boolean addDevice(UserDevice userDevice) {
-        requestURL = "https://www.liuyunxing.cn:8080/api/devices";
+        requestURL = Constants.HTTP_REQUESTURL_PREFIX + "/api/devices";
         JSONObject json = new JSONObject();
         try {
-            json.put("applicationID", "4"); //此处userDevice.getApplicationid()
-            json.put("description", "这是描述");
+            json.put("applicationID", userDevice.getApplicationid());
+            json.put("description", Constants.ADD_DEVICE_DEFAULT_DESCRIPTION);
             json.put("devEUI", userDevice.getDevEUI());
-            json.put("deviceProfileID", "0391774c-8fcb-46b1-a225-9faef7d57fe1");
+            json.put("deviceProfileID", Constants.ADD_DEVICE_DEFAULT_DEVICEPROFILEID);
             json.put("name", userDevice.getDevname());
             json.put("skipFCntCheck", true);
         } catch (JSONException e) {
@@ -58,7 +58,7 @@ public class HttpInfo {
     }
 
     public static boolean deleteDevice(String devEUI) {
-        requestURL = "https://www.liuyunxing.cn:8080/api/devices/" + devEUI;
+        requestURL = Constants.HTTP_REQUESTURL_PREFIX + "/api/devices/" + devEUI;
         return HttpHelper.ByDelete(requestURL, token);
     }
 }

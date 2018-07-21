@@ -8,10 +8,7 @@ import com.example.demo.Service.Impl.UserTokenServiceImpl;
 import com.example.demo.Service.UserDeviceService;
 import com.example.demo.Service.UserTokenService;
 import com.example.demo.Test.DemoDATA;
-import com.example.demo.Utils.DataProcess;
-import com.example.demo.Utils.MQTTUtil;
-import com.example.demo.Utils.RealTimeUtil;
-import com.example.demo.Utils.SpringBeanFactoryUtil;
+import com.example.demo.Utils.*;
 import org.fusesource.mqtt.client.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,12 +184,12 @@ public class WebSocketServer {
     public void subscribe(String topic, String userid) {  // 建立连接
          mqtt = new MQTT();
         try {
-            mqtt.setHost("tcp://39.106.54.222:1883");
+            mqtt.setHost(Constants.MQTT_HOST);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        mqtt.setUserName("cdx");
-        mqtt.setPassword("cdxhhhhh");
+        mqtt.setUserName(Constants.MQTT_USERNAME);
+        mqtt.setPassword(Constants.MQTT_PASSWORD);
         connection = mqtt.blockingConnection();
         try {
             connection.connect();
@@ -218,7 +215,7 @@ public class WebSocketServer {
     //构造topic，这里只需rx
     //type : rx   tx
     public static String makeTopic(String devEUI) {
-        return "application/2/device/" + devEUI + "/rx";
+        return Constants.MQTT_TOPIC_PREFIX + devEUI + "/rx";
     }
 
 

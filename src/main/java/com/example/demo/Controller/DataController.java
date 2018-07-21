@@ -2,6 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Service.DataService;
 import com.example.demo.Utils.DataUtil;
+import com.example.demo.Utils.RealTimeUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -47,13 +48,13 @@ public class DataController {
 
     /**
      * 获取实时数据
-     * 描述：向客户端转发客户端需要的数据
+     * 描述：向Android客户端发送指定设备上最新的数据
      */
-    @ApiOperation(value = "实时数据", notes = "获取指定设备传感器的实时数据")
+    @ApiOperation(value = "实时数据", notes = "获取指定设备上所有传感器的实时数据")
     @RequestMapping(value = "/getrealtimedata", method = RequestMethod.GET)
     @ResponseBody
-    public HashMap<String, String > getrealtimedata(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "typeid", required = true) String typeid, @RequestParam(value = "choice", required = false) String choice) {
-        return null;
+    public String getrealtimedata(@RequestParam(value = "devEUI", required = true) String devEUI) {
+        return RealTimeUtil.getRealTimeData(devEUI).toString();
     }
 
 }
