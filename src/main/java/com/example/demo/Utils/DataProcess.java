@@ -65,20 +65,8 @@ public class DataProcess {
                 }
                 System.out.println(buf.toString());
 
-                String date = getNowDate("yyyyMMddHH");
-                if (!date.equals(currentTime)) {
-                    currentTime = date;
-                    hashMap.clear();
-                }
-                if (hashMap.containsKey(devEUI)){
-                    if (hashMap.get(devEUI)) {
-                        return;
-                    }
-                } else {
-                    hashMap.put(devEUI, false);
-                }
                 //分析并存储数据
-                hexStringAnalysis(buf.toString(), devEUI, date);
+                hexStringAnalysis(buf.toString(), devEUI);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -86,12 +74,13 @@ public class DataProcess {
     }
 
 
-    public static void hexStringAnalysis(String hexstr, String devEUI, String date) {
+    public static void hexStringAnalysis(String hexstr, String devEUI) {
         if (hexstr.length() <= 4 ) {
             System.out.println("数据格式有误！");
 //            throw new IndexOutOfBoundsException();
             return ;
         }
+
         //CRC 校验
         String CRCstr = hexstr.substring(hexstr.length() - 4, hexstr.length());
         String forcheck = hexstr.substring(0, hexstr.length() - 4);
@@ -121,8 +110,28 @@ public class DataProcess {
         if (!type.equals(Instructions.UPLINK_SENSOR_DATA)) {
             return;
         }
-
         forcheck = forcheck.substring(2, forcheck.length());
+
+
+        //Android端实时数据存储
+        RealTimeUtil.saveRealTimeData(devEUI, forcheck);
+
+
+        //对  同一设备同一传感器类型的数据  隔1h存储一次
+        String date = getNowDate("yyyyMMddHH");
+        if (!date.equals(currentTime)) {
+            currentTime = date;
+            hashMap.clear();
+        }
+        if (hashMap.containsKey(devEUI)){
+            if (hashMap.get(devEUI)) {
+                return;
+            }
+        } else {
+            hashMap.put(devEUI, false);
+        }
+
+
         boolean result = true;
         //分析数据
         for (int index = 0; index < forcheck.length(); ) {

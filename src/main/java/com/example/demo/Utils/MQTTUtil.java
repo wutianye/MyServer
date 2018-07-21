@@ -15,15 +15,14 @@ public class MQTTUtil {
 
         MQTT mqtt = new MQTT();
         try {
-            mqtt.setHost("tcp://39.106.54.222:1883");
-//			mqtt.setHost("tcp://www.liuyunxing.cn:1883/");
+            mqtt.setHost(Constants.MQTT_HOST);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-//		mqtt.setUserName("test2");
-//		mqtt.setPassword("123456");
-        mqtt.setUserName("cdx");
-        mqtt.setPassword("cdxhhhhh");
+
+        mqtt.setUserName(Constants.MQTT_USERNAME);
+        mqtt.setPassword(Constants.MQTT_PASSWORD);
         BlockingConnection connection = mqtt.blockingConnection();
         try {
             connection.connect();
@@ -68,15 +67,14 @@ public class MQTTUtil {
         }
         MQTT mqtt = new MQTT();
         try {
-            mqtt.setHost("tcp://39.106.54.222:1883");
-//			mqtt.setHost("tcp://www.liuyunxing.cn:1883/");
+            mqtt.setHost(Constants.MQTT_HOST);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-//		mqtt.setUserName("test2");
-//		mqtt.setPassword("123456");
-        mqtt.setUserName("cdx");
-        mqtt.setPassword("cdxhhhhh");
+
+        mqtt.setUserName(Constants.MQTT_USERNAME);
+        mqtt.setPassword(Constants.MQTT_PASSWORD);
         BlockingConnection connection = mqtt.blockingConnection();
         try {
             connection.connect();
@@ -155,7 +153,7 @@ public class MQTTUtil {
     //构造topic
     //type : rx   tx
     public static String makeTopic(String devEUI, String type) {
-        return "application/2/device/" + devEUI + "/" + type;
+        return Constants.MQTT_TOPIC_PREFIX + devEUI + "/" + type;
     }
 
     //构造指令（构造传感器开关指令）
