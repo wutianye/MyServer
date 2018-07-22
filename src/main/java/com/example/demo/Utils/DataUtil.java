@@ -4,6 +4,7 @@ import com.example.demo.Entity.Data;
 import com.example.demo.Service.DataService;
 import com.example.demo.Service.Impl.RedisServiceImpl;
 import com.example.demo.Service.RedisService;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -128,6 +129,8 @@ public class DataUtil {
     }
 
     //给定日期区间、devEUI、typeid的所有数据列表
+
+   /* @Cacheable(value="userCache") //缓存,这里没有指定key. 允许缓存*/
     public static List<HashMap<String, String>> getdatafromdatetodate(DataService dataService, String date1, String date2, String devEUI, String typeid, String choice) {
         List<Data> dataList;
         switch (typeid) {

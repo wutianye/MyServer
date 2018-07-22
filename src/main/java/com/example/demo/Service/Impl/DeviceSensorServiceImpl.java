@@ -17,7 +17,7 @@ public class DeviceSensorServiceImpl implements DeviceSensorService{
 
     @Override
     public void insert(DeviceSensor deviceSensor) {
-        deviceSensorJpaRepository.save(deviceSensor);
+        deviceSensorJpaRepository.saveAndFlush(deviceSensor);
     }
 
     @Override
@@ -35,4 +35,15 @@ public class DeviceSensorServiceImpl implements DeviceSensorService{
         return deviceSensorJpaRepository.findDeviceSensorByDevEUIAndTypeid(devEUI, typeid);
     }
 
+    @Override
+    public void deleteBydevEUI(String devEUI) {
+        deviceSensorJpaRepository.deleteAllByDevEUI(devEUI);
+        deviceSensorJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteBydevEUIAndTypeid(String devEUI, String typeid) {
+        deviceSensorJpaRepository.deleteByDevEUIAndTypeid(devEUI, typeid);
+        deviceSensorJpaRepository.flush();
+    }
 }

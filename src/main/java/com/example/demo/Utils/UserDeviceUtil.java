@@ -27,7 +27,7 @@ public class UserDeviceUtil {
             }
         } else {
             info.setResult(false);
-            info.setInfo("添加设备失败！未知错误");
+            info.setInfo("添加设备失败！请检查设备devEui格式是否正确");
         }
         return info;
     }
@@ -36,6 +36,7 @@ public class UserDeviceUtil {
         List<UserDevice> list = userDeviceService.findAllByUserid(userid);
         return list;
     }
+
 
     //list<UserDevice>转list<HashMap<String,String>>
     public static List<HashMap<String,String>> toHashlist(List<UserDevice> userDeviceList) {

@@ -1,6 +1,7 @@
 package com.example.demo.Component;
 
 
+import com.example.demo.Utils.Constants;
 import com.example.demo.Utils.DataProcess;
 import org.fusesource.mqtt.client.*;
 import org.springframework.boot.CommandLineRunner;
@@ -21,32 +22,27 @@ public class MySecondRunner implements CommandLineRunner{
     public void run(String... args) throws Exception {
         MQTT mqtt = new MQTT();
         try {
-            mqtt.setHost("tcp://39.106.54.222:1883");
-//			mqtt.setHost("tcp://www.liuyunxing.cn:1883/");
+            mqtt.setHost(Constants.MQTT_HOST);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-//		mqtt.setUserName("test2");
-//		mqtt.setPassword("123456");
-        mqtt.setUserName("cdx");
-        mqtt.setPassword("cdxhhhhh");
+        mqtt.setUserName(Constants.MQTT_USERNAME);
+        mqtt.setPassword(Constants.MQTT_PASSWORD);
         BlockingConnection connection = mqtt.blockingConnection();
         try {
             connection.connect();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("mqtt连接成功！订阅application/2/device/+/rx：");
-        while(true) {
+        Topic[] topics = {new Topic(Constants.MQTT_TOPIC, QoS.AT_LEAST_ONCE)};
 
-//			Topic[] topics = {new Topic("application/#", QoS.AT_LEAST_ONCE)};
-            Topic[] topics = {new Topic("application/2/device/+/rx", QoS.AT_LEAST_ONCE)};
-//            Topic[] topics = {new Topic("application/5/device/+/rx", QoS.AT_LEAST_ONCE)};
-            try {
-                byte[] qoses = connection.subscribe(topics);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            byte[] qoses = connection.subscribe(topics);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("mqtt连接成功！订阅" + Constants.MQTT_TOPIC + ":");
+        while(true) {
             Message message = null;
             try {
                 message = connection.receive();
@@ -58,7 +54,6 @@ public class MySecondRunner implements CommandLineRunner{
             // process the message then:
             DataProcess.getDataFromTopicAndPayLoad(message.getTopic(), new String(message.getPayload()));
             message.ack();
-
         }
     }
 }

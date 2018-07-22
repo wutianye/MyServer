@@ -16,7 +16,7 @@ public class DataServiceImpl implements DataService{
 
     @Override
     public Data findByDateAndDevEUIAndTypeid(String date, String devEUI, String typeid){
-        return dataJpaRepository.findDataByDateAndDevEUIAndAndTypeid(date, devEUI, typeid);
+        return dataJpaRepository.findDataByDateAndDevEUIAndTypeid(date, devEUI, typeid);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class DataServiceImpl implements DataService{
 
     @Override
     public void insert(Data data) {
-        dataJpaRepository.save(data);
+        dataJpaRepository.saveAndFlush(data);
     }
 
     @Override
@@ -39,4 +39,25 @@ public class DataServiceImpl implements DataService{
         return dataJpaRepository.findAllByDevEUIAndTypeidAndDateBetween(devEUI, typeid, date1, date2);
     }
 
+    @Override
+    public void deleteBydevEUI(String devEUI) {
+        dataJpaRepository.deleteAllByDevEUI(devEUI);
+        dataJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteBydevEUIAndTypeid(String devEUI, String typeid) {
+        dataJpaRepository.deleteAllByDevEUIAndTypeid(devEUI, typeid);
+        dataJpaRepository.flush();
+    }
+
+    @Override
+    public List<Data> findBydevEUIAndTypeid(String devEUI, String typeid) {
+        return dataJpaRepository.findAllByDevEUIAndTypeid(devEUI, typeid);
+    }
+
+    @Override
+    public List<Data> findBydevEUI(String devEUI) {
+        return dataJpaRepository.findAllByDevEUI(devEUI);
+    }
 }

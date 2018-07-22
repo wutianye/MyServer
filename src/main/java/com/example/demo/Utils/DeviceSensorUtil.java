@@ -4,7 +4,6 @@ import com.example.demo.Entity.DeviceSensor;
 import com.example.demo.Entity.SensorType;
 import com.example.demo.Service.DeviceSensorService;
 import com.example.demo.Service.SensorTypeService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,7 @@ public class DeviceSensorUtil {
         for (DeviceSensor deviceSensor : deviceSensorList) {
             if (deviceSensor.getTypeid().equals("02")){
                 //三合一的传感器
-                String[] choice = {"qiti","wendu","shidu"};
+                String[] choice = {"wendu","shidu", "qiti"};
                 String[] name = {"temperature","humidity","gas"};
                 String[] label = {"温度","湿度","气体浓度"};
                 SensorType sensorType = sensorTypeService.getasensortype(deviceSensor.getTypeid());
@@ -102,8 +101,32 @@ public class DeviceSensorUtil {
             info.setInfo("状态未改变！");
             return info;
         }
+        //构造指令
+        String instruction;
+        if (deviceSensor.getState().equals("1")) {
+            instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_SENSOR_SWITCH, deviceSensor.getTypeid(), Instructions.SENSOR_OPEN);
+        } else if (deviceSensor.getState().equals("0")){
+            instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_SENSOR_SWITCH, deviceSensor.getTypeid(), Instructions.SENSOR_CLOSE);
+        } else {
+            info.setResult(false);
+            info.setInfo("无效的状态！");
+            return info;
+        }
+        if (instruction == null) {
+            info.setResult(false);
+            info.setInfo("创建下发指令失败！");
+            return info;
+        }
+        //下发指令开始，处理ack
+        String topic = MQTTUtil.makeTopic(deviceSensor.getDevEUI(), "tx");
+        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+        if (!info.isResult()) {
+            return info;
+        }
+
+        deviceSensor1.setState(deviceSensor.getState());
         deviceSensorService.insert(deviceSensor1);
-        deviceSensor1 = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
+        deviceSensor = deviceSensorService.findBydevEUIAndTypeid(deviceSensor.getDevEUI(), deviceSensor.getTypeid());
         if (deviceSensor1.getState() == deviceSensor.getState()) {
             info.setResult(true);
             info.setInfo("状态已改变！");
@@ -113,5 +136,6 @@ public class DeviceSensorUtil {
         }
         return info;
     }
+
 
 }

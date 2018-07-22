@@ -9,4 +9,8 @@ public interface UserDeviceJpaRepository extends JpaRepository<UserDevice, Strin
 
     List<UserDevice> findUserDevicesByUserid(String userid);
 
+    void deleteAllByUserid(String userid);
+
+    void deleteByDevEUI(String devEUI);
+
 }
