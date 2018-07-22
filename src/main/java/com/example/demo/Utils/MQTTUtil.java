@@ -95,7 +95,7 @@ public class MQTTUtil {
         //发布之后要根据返回的ACK判断该操作是否成功，并将结果告知前端，或者将获取的继电器状态结果返回
         Message message = null;
         try {
-            message = connection.receive(10, TimeUnit.SECONDS);
+            message = connection.receive(15, TimeUnit.SECONDS);
         } catch (Exception e) {
             e.printStackTrace();
         }

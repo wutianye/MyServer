@@ -195,6 +195,8 @@ public class DataProcess {
                         result = false;
                     }
                     break;
+                case Instructions.SENSOR_GPS:
+                    break;
                 default:
                     return ;
             }

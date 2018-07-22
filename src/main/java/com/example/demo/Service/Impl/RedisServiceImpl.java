@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class RedisServiceImpl implements RedisService{
     @Autowired
@@ -32,6 +34,12 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public void setValue(String key,String value){
         redisTemplate.opsForValue().set(key,value);
+    }
+
+    //获取给定pattern的keys集合
+    @Override
+    public Set<String> getKeysByPattern(String pattern) {
+        return redisTemplate.keys(pattern);
     }
 
 }
