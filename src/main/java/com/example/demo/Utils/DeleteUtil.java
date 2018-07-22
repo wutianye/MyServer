@@ -6,6 +6,7 @@ import com.example.demo.Service.*;
 import com.example.demo.Service.Impl.*;
 
 import java.util.List;
+import java.util.Set;
 
 public class DeleteUtil {
 
@@ -15,13 +16,19 @@ public class DeleteUtil {
     private static DeviceSensorService deviceSensorService = SpringBeanFactoryUtil.getBean(DeviceSensorServiceImpl.class);
     private static DeviceRelayService deviceRelayService = SpringBeanFactoryUtil.getBean(DeviceRelayServiceImpl.class);
     private static DataService dataService = SpringBeanFactoryUtil.getBean(DataServiceImpl.class);
+    private static RedisService redisService = SpringBeanFactoryUtil.getBean(RedisServiceImpl.class);
 
     //删除给定devEUI、typeid有关的数据
     public static TMessage deleteData(String devEUI, String typeid) {
         dataService.deleteBydevEUIAndTypeid(devEUI, typeid);
-        List<Data> dataList = dataService.findBydevEUIAndTypeid(devEUI, typeid);
         /*redis中的数据也要删除*/
+        String pattern = "*_" + devEUI + "_" + typeid;
+        Set<String> stringSet = redisService.getKeysByPattern(pattern);
+        for (String key : stringSet) {
+            redisService.deleteByKey(key);
+        }
 
+        List<Data> dataList = dataService.findBydevEUIAndTypeid(devEUI, typeid);
         if (dataList == null || dataList.size() == 0) {
             return new TMessage(TMessage.CODE_SUCCESS, "删除数据成功");
         }
@@ -31,9 +38,14 @@ public class DeleteUtil {
     //删除给定devEUI有关的所有数据
     public static TMessage deleteData(String devEUI) {
         dataService.deleteBydevEUI(devEUI);
-        List<Data> dataList = dataService.findBydevEUI(devEUI);
         /*redis中的数据也要删除*/
+        String pattern = "*_" + devEUI + "_*";
+        Set<String> stringSet = redisService.getKeysByPattern(pattern);
+        for (String key : stringSet) {
+            redisService.deleteByKey(key);
+        }
 
+        List<Data> dataList = dataService.findBydevEUI(devEUI);
         if (dataList == null || dataList.size() == 0) {
             return new TMessage(TMessage.CODE_SUCCESS, "删除数据成功");
         }

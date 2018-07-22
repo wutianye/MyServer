@@ -7,9 +7,12 @@ import com.example.demo.Service.DeviceRelayService;
 import com.example.demo.Service.RelaySwitchService;
 import com.example.demo.Service.RelayTypeService;
 import io.swagger.models.auth.In;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class DeviceRelayUtil {
@@ -99,7 +102,7 @@ public class DeviceRelayUtil {
         return info.getInfo();
     }
 
-    //修改继电器开关状态
+    //修改继电器开关状态（单个）
     public static Info changeRelaySwitch(String devEUI, String switchId, String state) {
         Info info = new Info();
         String str = "";
@@ -121,6 +124,42 @@ public class DeviceRelayUtil {
     public static Info downlinkInstruction(String devEUI, String switchId, String state) {
         Info info;
         String instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_RELAY_CONTROL + switchId + state + "ff");
+        String topic = MQTTUtil.makeTopic(devEUI, "tx");
+        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+        return info;
+    }
+
+    //修改继电器开关状态（多个）
+    public static Info changeRelaySwitch(String devEUI, String jsonstr) {
+        Info info = new Info();
+        //构造指令
+        String str = Instructions.DOWNLINK_RELAY_CONTROL;
+
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(jsonstr);
+            Iterator<String> it = jsonObject.keys();
+            while(it.hasNext()) {
+                // 获得key
+                String key = it.next();
+                String value = jsonObject.getString(key);
+                String state;
+                if (value.equals("1")) {
+                    state = Instructions.RELAY_SWITCH_OPEN;
+                } else if (value.equals("0")) {
+                    state = Instructions.RELAY_SWITCH_CLOSE;
+                } else {
+                    info.setResult(false);
+                    info.setInfo("无效的状态！");
+                    return info;
+                }
+                str = str + key + state + "ff";
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String instruction = MQTTUtil.makeInstructions(str);
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
         info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
         return info;

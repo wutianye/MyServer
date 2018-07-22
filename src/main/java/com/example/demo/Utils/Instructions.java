@@ -5,6 +5,7 @@ public class Instructions {
     //传感器编号
     final public static String SENSOR_WIND = "01";//风速传感器
     final public static String SENSOR_GTH = "02";//温湿度氨气三合一
+    final public static String SENSOR_GPS = "05";//GPS传感器
 
 
     //传感器开关指令

@@ -1,5 +1,7 @@
 package com.example.demo.Service;
 
+import java.util.Set;
+
 public interface RedisService {
 
     //判断key是否存在
@@ -13,4 +15,7 @@ public interface RedisService {
 
     //插入数据
     void setValue(String key,String value);
+
+    //获取给定pattern的keys集合
+    Set<String> getKeysByPattern(String pattern);
 }

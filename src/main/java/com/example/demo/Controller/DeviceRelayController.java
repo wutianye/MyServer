@@ -71,7 +71,7 @@ public class DeviceRelayController {
 
     /**
      * 修改某开关的状态
-     * 描述：改变继电器开关状态
+     * 描述：改变继电器某一个开关状态
      */
     @ApiOperation(value = "更改继电器开关状态", notes = "更改指定设备下指定继电器指定开关的状态，switchId为获取开关列表时传回来的，state为0或1，代表关/开")
     @RequestMapping(value = "changeRelaySwitch", method = RequestMethod.POST)
@@ -79,6 +79,18 @@ public class DeviceRelayController {
     public String changeRelaySwitch(@RequestParam(value = "devEUI", required = true)String devEUI, @RequestParam(value = "switchId", required = true) String switchId, @RequestParam(value = "state", required = true) String state) {
         return DeviceRelayUtil.changeRelaySwitch(devEUI, switchId, state).toJSONString();
     }
+
+    /**
+     * 修改继电器开关的状态
+     * 描述：改变继电器多个开关状态
+     */
+    @ApiOperation(value = "更改继电器开关状态", notes = "更改指定设备下指定继电器多个开关的状态，需要前端给出devEUI和一个jsonObject.toString的信息，jsonObject中包含如下类似信息：{'02':'1','03':'0'}，其中key字段为开关的编号，value字段为开关状态0/1")
+    @RequestMapping(value = "changeRelayMulSwitch", method = RequestMethod.POST)
+    @ResponseBody
+    public String changeRelayMulSwitch(@RequestParam(value = "devEUI", required = true)String devEUI, @RequestParam(value = "jsonstr", required = true) String jsonstr) {
+        return DeviceRelayUtil.changeRelaySwitch(devEUI, jsonstr).toJSONString();
+    }
+
 
     /**
      * 删除继电器
