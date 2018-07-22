@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 
+import com.example.demo.Annotation.CurrentUserid;
 import com.example.demo.Entity.User;
 import com.example.demo.Entity.UserToken;
 import com.example.demo.Service.DataService;
@@ -148,5 +149,21 @@ public class UserController {
         return DeleteUtil.deleteUser(userid);
     }
 
+    /**
+     * liuyunxing
+     * @param userid
+     * @return
+     * 获得目录树形式的用户信息
+     */
+    @GetMapping("/user/getTreeUserInfo")
+    public TMessage getTreeInfo(@RequestAttribute("currentUserid") String userid){
+        return  userService.getTreeInfo(userid);
+    }
+
+    @GetMapping("/user/getTreeDeviceInfo")
+    public TMessage getTreeDeviceInfo(@RequestAttribute("currentUserid") String userid ,String aimUserId){ // 获得制定用户的设别目录树信息表
+
+        return  userService.getTreeDevice(userid, aimUserId);
+    }
 
 }
