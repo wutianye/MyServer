@@ -241,7 +241,9 @@ public class WebSocketServer {
                     Message message = null;
                     try {
                         //receive最多等待5秒继续执行下面的代码
+                        System.out.println("正在请求数据");
                         message = connection.receive(5, TimeUnit.SECONDS);
+
                     } catch (Exception e) {
                         System.out.println("receive 异常！");
                         e.printStackTrace();
@@ -256,6 +258,7 @@ public class WebSocketServer {
                         System.out.println("向前台发送数据：\n\r"+res);
                         try {
                             if (data != null) {
+
                                 sendMessage(res);
                             }
                         } catch (IOException e) {
@@ -265,14 +268,14 @@ public class WebSocketServer {
                         }
                         message.ack();
                     } else {
-
+                        /*
                         try {
                             String jsonData = DemoDATA.getDemoDATA();
                             sendMessage(jsonData +""); // 推送数据给前端， 返回给前端的假数据
                             System.out.println(jsonData);
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                         System.out.println("暂无数据...");
                     }
                 }
