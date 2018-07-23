@@ -190,6 +190,7 @@ public class DeviceRelayUtil {
             count--;
             if (info.isResult()) {
                 System.out.println("修改继电器开关状态成功！");
+                info.setInfo("修改继电器开关状态成功！");
                 break;
             }
         }
