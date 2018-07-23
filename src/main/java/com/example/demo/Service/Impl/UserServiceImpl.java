@@ -208,9 +208,15 @@ public class UserServiceImpl implements UserService{
         if (deviceSensor.getTypeid().equals("01")){ //如果这个传感器是01
             sensorTree.put("icon","wind");
             sensorTree.put("label","风速传感器");
+            sensorTree.put("typeId","01");
         }else if (deviceSensor.getTypeid().equals("02")){
             sensorTree.put("icon","complex"); //温湿度三合一
             sensorTree.put("label","温湿度三合一传感器");
+            sensorTree.put("typeId","02");
+        }else if (deviceSensor.getTypeid().equals("03")){
+            sensorTree.put("icon","gps");
+            sensorTree.put("label","GPS传感器");
+            sensorTree.put("typeId","03");
         }
         return  sensorTree;
     }
@@ -222,6 +228,7 @@ public class UserServiceImpl implements UserService{
         delaySensor.put("id",deviceRelay.getDevEUI()  + deviceRelay.getRelayType() + Math.random());
         delaySensor.put("status", true);
         delaySensor.put("label",relayType.getRelayName());
+        delaySensor.put("delayType", relayType.getRelayType()); // 触发器类别
         delaySensor.put("icon","control");
         delaySensor.put("type","controlDevice");
         // 添加child
@@ -232,6 +239,7 @@ public class UserServiceImpl implements UserService{
             one.put("id",relaySwitch.getSwitchId()+deviceRelay.getDevEUI());
             one.put("status","false"); //触发器状态
             one.put("label", relaySwitch.getSwitchName());
+            one.put("switchId", relaySwitch.getSwitchId());//开关id
             one.put("icon", "control");
             one.put("type","control"); //控制器
             one.put("ctype","继电器开关"); //控制器

@@ -1,7 +1,10 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Entity.User;
 import com.example.demo.Service.UserDeviceService;
+import com.example.demo.Service.UserService;
 import com.example.demo.Utils.DeleteUtil;
+import com.example.demo.Utils.Info;
 import com.example.demo.Utils.TMessage;
 import com.example.demo.Utils.UserDeviceUtil;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +23,9 @@ public class UserDeviceController {
 
     @Autowired
     private UserDeviceService userDeviceService;
+
+    @Autowired
+    private UserService userService;
     /**
      * 添加一个设备
      * 描述：给定devEUI、devname及userid为用户添加设备
@@ -27,10 +33,43 @@ public class UserDeviceController {
     @ApiOperation(value = "添加设备", notes = "添加一个设备")
     @RequestMapping(value = "/adddevice", method = RequestMethod.POST)
     @ResponseBody
-    public String adddevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "devname", required = true) String devname, @RequestAttribute("currentUserid") String userid, @RequestParam(value = "longitude", required = false) String longitude, @RequestParam(value = "latitude", required = false) String latitude, @RequestParam(value = "address", required = false) String address) {
+    public String adddevice(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "devname", required = true)
+            String devname, @RequestAttribute("currentUserid") String userid, @RequestParam(value = "longitude", required = false)
+            String longitude, @RequestParam(value = "latitude", required = false) String latitude, @RequestParam(value = "address", required = false)
+            String address) {
         return UserDeviceUtil.adddevice(userDeviceService, devEUI, devname, userid, longitude, latitude, address).toJSONString();
     }
 
+    /**
+     * 管理员为用户添加设备
+     * @param aimUserId
+     * @param devEUI
+     * @param devname
+     * @param userid
+     * @param longitude
+     * @param latitude
+     * @param address
+     * @return
+     */
+    @PostMapping("/adminAddDevice")
+    public TMessage adminAddDevice(@RequestParam(value = "aimUserId", required = true) String aimUserId,@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "devname", required = true)
+            String devname, @RequestAttribute("currentUserid") String userid, @RequestParam(value = "longitude", required = false)
+            String longitude, @RequestParam(value = "latitude", required = false) String latitude, @RequestParam(value = "address", required = false)
+            String address){
+        User user = userService.findByUserid(userid);
+        if (!user.getFlag().equals("admin")){
+            return  new TMessage(TMessage.CODE_FAILURE, "只有管理员可以进行此项操作");
+        }
+        User aimUser = userService.findByUserid(aimUserId);
+        if (aimUser == null){
+            return new TMessage(TMessage.CODE_FAILURE, "操作的用户不存在");
+        }
+        Info info = UserDeviceUtil.adddevice(userDeviceService, devEUI, devname, aimUserId, longitude, latitude, address);
+        if (info.isResult()) {
+            return new TMessage(TMessage.CODE_SUCCESS,info.getInfo());
+        }
+        return  new TMessage(TMessage.CODE_FAILURE, info.getInfo());
+    }
     /**
      * 获取设备列表
      * 描述：获取给定用户的设备列表

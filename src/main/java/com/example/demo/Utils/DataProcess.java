@@ -296,9 +296,10 @@ public class DataProcess {
             //分析处理数据
             return currentDataAnalysis(buf.toString(), devEUI, date);
         } catch (JSONException e) {
+            System.out.println("json异常");
             e.printStackTrace();
         }
-        return null;
+     return null;
     }
 
     private static String formatDate(String date) {
@@ -478,7 +479,7 @@ public class DataProcess {
                     }
                     break;
                 default:
-                    return null;
+                    break;
             }
             index += length * 2;
         }

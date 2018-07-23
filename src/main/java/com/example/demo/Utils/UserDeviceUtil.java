@@ -27,7 +27,7 @@ public class UserDeviceUtil {
             }
         } else {
             info.setResult(false);
-            info.setInfo("添加设备失败！未知错误");
+            info.setInfo("添加设备失败！请检查设备devEui格式是否正确");
         }
         return info;
     }
