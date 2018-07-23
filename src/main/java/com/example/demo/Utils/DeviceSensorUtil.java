@@ -117,12 +117,24 @@ public class DeviceSensorUtil {
             info.setInfo("创建下发指令失败！");
             return info;
         }
+
         //下发指令开始，处理ack
         String topic = MQTTUtil.makeTopic(deviceSensor.getDevEUI(), "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+        int count = 3;
+        System.out.println("改变传感器状态...");
+        while(count > 0){
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            count--;
+            if (info.isResult()) {
+                break;
+            }
+        }
+
         if (!info.isResult()) {
+            System.out.println("改变传感器状态失败！");
             return info;
         }
+        System.out.println("改变传感器状态成功！");
 
         deviceSensor1.setState(deviceSensor.getState());
         deviceSensorService.insert(deviceSensor1);

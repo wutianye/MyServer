@@ -102,4 +102,21 @@ public class UserDeviceController {
         return DeleteUtil.deleteDevice(devEUI);
     }
 
+    /**
+     * 更改设备上传速率
+     * 描述：更改给定设备传感器上传数据速率
+     */
+    @ApiOperation(value = "更改设备上传速率", notes = "更改给定设备传感器上传数据速率")
+    @RequestMapping(value = "/changeFrequency", method = RequestMethod.POST)
+    @ResponseBody
+    public TMessage changeFrequency(@RequestParam(value = "devEUI", required = true) String devEUI, @RequestParam(value = "frequency", required = true) String frequency) {
+        int freq;
+        try {
+            freq = Integer.parseInt(frequency);
+        } catch (Exception e) {
+            return new TMessage(TMessage.CODE_FAILURE, "速率字段无效！");
+        }
+        return UserDeviceUtil.changeFrequency(userDeviceService, devEUI, freq);
+    }
+
 }
