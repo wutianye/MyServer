@@ -7,7 +7,7 @@ public class Constants {
     final public static String MQTT_HOST = "tcp://39.106.54.222:1883";
     final public static String MQTT_USERNAME = "cdx";
     final public static String MQTT_PASSWORD = "cdxhhhhh";
-    final public static String MQTT_TOPIC = "application/2/device/004a770066003301/rx";
+    final public static String MQTT_TOPIC = "application/2/device/004a770066003304/rx";
     final public static String MQTT_TOPIC_PREFIX = "application/2/device/";
 //    final public static String MQTT_HOST = "tcp://www.liuyunxing.cn:1883/";
 //    final public static String MQTT_USERNAME = "test2";

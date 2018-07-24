@@ -30,7 +30,7 @@ public class DataProcess {
     private static UserDeviceService userDeviceService = SpringBeanFactoryUtil.getBean(UserDeviceServiceImpl.class);
 
     //定义线程池
-    private static ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    public static ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     static {
         //配置核心线程数
         executor.setCorePoolSize(5);
