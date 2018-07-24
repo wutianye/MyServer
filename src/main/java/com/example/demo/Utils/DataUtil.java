@@ -66,7 +66,6 @@ public class DataUtil {
             //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
             str = date + "%";
             dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
-            System.out.println("--------------------size:" + dataSet.size());
             redisHander(dataSet);
         } else {
             for (String key : stringSet) {
