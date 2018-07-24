@@ -6,6 +6,7 @@ import com.example.demo.Entity.RelayType;
 import com.example.demo.Service.DeviceRelayService;
 import com.example.demo.Service.RelaySwitchService;
 import com.example.demo.Service.RelayTypeService;
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
 import io.swagger.models.auth.In;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +95,17 @@ public class DeviceRelayUtil {
         Info info = new Info();
         String instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_RELAY_CONTROL + Instructions.RELAY_STATE_GET + "ff");
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "rstate");
+
+        int count = 3;
+        while (count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "rstate");
+            count--;
+            if (info.isResult()) {
+                System.out.println("获取继电器状态成功！");
+                break;
+            }
+        }
+
         if (!info.isResult()) {
             System.out.println("获取继电器状态，info:" + info.getInfo());
             return null;
@@ -122,10 +133,20 @@ public class DeviceRelayUtil {
 
     //构造修改继电器状态指令，下发指令，等待回复结果
     public static Info downlinkInstruction(String devEUI, String switchId, String state) {
-        Info info;
+        Info info = new Info();
         String instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_RELAY_CONTROL + switchId + state + "ff");
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+
+        int count = 3;
+        while (count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            count--;
+            if (info.isResult()) {
+                System.out.println("修改继电器开关状态成功！");
+                break;
+            }
+        }
+
         return info;
     }
 
@@ -157,12 +178,23 @@ public class DeviceRelayUtil {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            return new Info(false, "参数无效");
+            return new Info(false, "参数不符合要求！");
         }
 
         String instruction = MQTTUtil.makeInstructions(str);
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+
+        int count = 3;
+        while(count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            count--;
+            if (info.isResult()) {
+                System.out.println("修改继电器开关状态成功！");
+                info.setInfo("修改继电器开关状态成功！");
+                break;
+            }
+        }
+
         return info;
     }
 }

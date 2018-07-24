@@ -138,7 +138,7 @@ public class RealTimeUtil {
                     }
                     break;
                 default:
-                    return ;
+                    break;
             }
             index += length * 2;
         }
@@ -151,7 +151,7 @@ public class RealTimeUtil {
         try {
             Date now = df.parse(nowdate);
             Date old = df.parse(olddate);
-            if (now.getTime() - old.getTime() < 30) {
+            if (((now.getTime() - old.getTime())/1000) < 30) {
                 return true;
             }
         } catch (ParseException e) {

@@ -10,6 +10,9 @@ public interface UserDeviceService {
     //添加一个设备
     void insert(UserDevice userDevice);
 
+    //获取一条设备信息
+    UserDevice findBydevEUI(String devEUI);
+
     //根据devEUI判断设备是否存在
     boolean exists(String devEUI);
 

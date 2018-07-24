@@ -50,6 +50,7 @@ public class WebSocketServer {
     private String devEUI="";
     private MQTT mqtt;
     private BlockingConnection connection;
+    private int timeout;
     //记录用户状态
     public static HashMap<String, Boolean> userState = new HashMap<String, Boolean>();
 
@@ -75,6 +76,7 @@ public class WebSocketServer {
 
             throw new RuntimeException("该用户下不存在相应设备！");
         }
+        timeout = getFrequency(devEUI);
 
         webSocketSet.put(id, this); // 加入set中
         addOnlineCount(); // 在线人数+1
@@ -103,7 +105,7 @@ public class WebSocketServer {
             if(this.subcribThread.isInterrupted()){
                 this.subcribThread.interrupt();// 打断睡眠
             }
-
+  /*          this.flag = false;*/
 
                     System.out.println(this.id + "断开连接"); // 这个循环进不去
                     webSocketSet.remove(this);
@@ -230,6 +232,12 @@ public class WebSocketServer {
         return false;
     }
 
+    //获取设备对应速率
+    public int getFrequency(String devEUI) {
+        UserDevice userDevice = userDeviceService.findBydevEUI(devEUI);
+        return userDevice.getFrequency();
+    }
+
     class SubThread extends Thread{
         private BlockingConnection connection;
         public SubThread(BlockingConnection connection){
@@ -240,10 +248,8 @@ public class WebSocketServer {
                 while(connection.isConnected()) {
                     Message message = null;
                     try {
-                        //receive最多等待5秒继续执行下面的代码
-                        System.out.println("正在请求数据");
-                        message = connection.receive(5, TimeUnit.SECONDS);
-
+                        //receive最多等待timeout秒继续执行下面的代码
+                        message = connection.receive(timeout, TimeUnit.SECONDS);
                     } catch (Exception e) {
                         System.out.println("receive 异常！");
                         e.printStackTrace();
@@ -258,7 +264,6 @@ public class WebSocketServer {
                         System.out.println("向前台发送数据：\n\r"+res);
                         try {
                             if (data != null) {
-
                                 sendMessage(res);
                             }
                         } catch (IOException e) {
@@ -268,6 +273,7 @@ public class WebSocketServer {
                         }
                         message.ack();
                     } else {
+
                         try {
                             String jsonData = DemoDATA.getDemoDATA();
                             sendMessage(jsonData +""); // 推送数据给前端， 返回给前端的假数据

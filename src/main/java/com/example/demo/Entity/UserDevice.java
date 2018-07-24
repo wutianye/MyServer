@@ -1,5 +1,7 @@
 package com.example.demo.Entity;
 
+import com.example.demo.Utils.Constants;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -14,6 +16,7 @@ public class UserDevice {
     private String longitude;//经度
     private String latitude;//纬度
     private String address;
+    private int frequency;//频率
 
 
     public String getApplicationid() {
@@ -76,13 +79,14 @@ public class UserDevice {
         this.address = address;
     }
 
-    public UserDevice(String devEUI, String devname, String userid, String applicationid) {
-        super();
-        this.devEUI = devEUI;
-        this.devname = devname;
-        this.userid = userid;
-        this.applicationid = applicationid;
+    public int getFrequency() {
+        return frequency;
     }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
 
     public UserDevice(String devEUI, String devname, String userid, String applicationid, String longitude, String latitude, String address) {
         this.devEUI = devEUI;
@@ -92,5 +96,6 @@ public class UserDevice {
         this.longitude = longitude;
         this.latitude = latitude;
         this.address = address;
+        this.frequency = Constants.DEFAULT_FREQUENCY;
     }
 }

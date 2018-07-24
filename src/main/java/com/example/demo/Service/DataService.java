@@ -15,6 +15,9 @@ public interface DataService {
     //插入一条数据
     void insert(Data data);
 
+    //插入多条数据
+    void insertList(List<Data> dataList);
+
     //查询符合%date%且devEUI、typeid的数据列表(某日数据)
     List<Data> findByDateLikeAndDevEUIAndTypeid(String datepattern, String devEUI, String typeid);
 

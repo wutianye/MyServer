@@ -81,16 +81,31 @@ public class DeleteUtil {
 
     //用户或管理员删除指定devEUI下所有的传感器
     public static TMessage deleteSensor(String devEUI) {
-        //1.关闭所有传感器
-        String str = Instructions.DOWNLINK_SENSOR_CONFIGURE + Instructions.CONFIGURE_CLOSEALL;
-        String instruction = MQTTUtil.makeInstructions(str);
-        if (instruction == null) {
-            return new TMessage(TMessage.CODE_FAILURE, "构造关闭所有传感器配置指令失败！");
+        //无传感器直接返回成功
+        List<DeviceSensor> deviceSensors = deviceSensorService.findBydevEUI(devEUI);
+        if (deviceSensors == null || deviceSensors.size() == 0) {
+            return new TMessage(TMessage.CODE_SUCCESS,"该设备下无传感器！");
         }
-        String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        Info info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
-        if (!info.isResult()) {
-            return new TMessage(TMessage.CODE_FAILURE, info.getInfo());
+        //有传感器则需删除数据
+        //传感器若有打开着的，则下发指令关闭传感器
+        boolean flag = false;
+        for (DeviceSensor deviceSensor : deviceSensors) {
+            if (deviceSensor.getState().equals("1")) {
+                flag = true;
+            }
+        }
+        if (flag) {
+            //1.关闭所有传感器
+            String str = Instructions.DOWNLINK_SENSOR_CONFIGURE + Instructions.CONFIGURE_CLOSEALL;
+            String instruction = MQTTUtil.makeInstructions(str);
+            if (instruction == null) {
+                return new TMessage(TMessage.CODE_FAILURE, "构造关闭所有传感器配置指令失败！");
+            }
+            String topic = MQTTUtil.makeTopic(devEUI, "tx");
+            Info info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            if (!info.isResult()) {
+                return new TMessage(TMessage.CODE_FAILURE, info.getInfo());
+            }
         }
         //2.删除对应的Data表中的数据
         TMessage tMessage = deleteData(devEUI);

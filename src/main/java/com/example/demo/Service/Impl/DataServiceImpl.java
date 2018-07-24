@@ -30,6 +30,11 @@ public class DataServiceImpl implements DataService{
     }
 
     @Override
+    public void insertList(List<Data> dataList) {
+        dataJpaRepository.saveAll(dataList);
+        dataJpaRepository.flush();
+    }
+    @Override
     public List<Data> findByDateLikeAndDevEUIAndTypeid(String datepattern, String devEUI, String typeid){
         return dataJpaRepository.findAllByDateLikeAndDevEUIAndTypeid(datepattern, devEUI, typeid);
     }

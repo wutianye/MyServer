@@ -85,4 +85,9 @@ public class UserDeviceServiceImpl implements UserDeviceService{
         userDeviceJpaRepository.deleteByDevEUI(devEUI);
     }
 
+    @Override
+    public UserDevice findBydevEUI(String devEUI) {
+        return userDeviceJpaRepository.findUserDeviceByDevEUI(devEUI);
+    }
+
 }
