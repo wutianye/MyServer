@@ -50,5 +50,25 @@ public class UserDeviceUtil {
         return hashMapList;
     }
 
+    //更改速率字段
+    public static TMessage changeFrequency(UserDeviceService userDeviceService, String devEUI, int freq) {
+        UserDevice userDevice = userDeviceService.findBydevEUI(devEUI);
+        int oldfreq = userDevice.getFrequency();
+        userDevice.setFrequency(freq);
+        try {
+            userDeviceService.insert(userDevice);
+        } catch (Exception e) {
+            System.out.println("userDeviceService 异常！");
+            return new TMessage(TMessage.CODE_FAILURE, "更新数据失败！");
+        }
+        //下发配置
+        Info info = DataProcess.downLinkConfigHander(devEUI);
+        if (!info.isResult()) {
+            userDevice.setFrequency(oldfreq);
+            userDeviceService.insert(userDevice);
+            return new TMessage(TMessage.CODE_FAILURE, "配置下发异常！");
+        }
+        return new TMessage(TMessage.CODE_SUCCESS, "更新配置成功！");
+    }
 
 }

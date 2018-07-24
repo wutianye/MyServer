@@ -62,7 +62,7 @@ public class DeviceRelayController {
     @RequestMapping(value = "getRelaySwitch", method = RequestMethod.GET)
     @ResponseBody
     public TMessage getRelaySwitch(@RequestParam(value = "devEUI", required = true)String devEUI, @RequestParam(value = "relayType", required = true) String relayType) {
-        List<HashMap<String ,String >> res = DeviceRelayUtil.getRelaySwitch(relaySwitchService, devEUI, relayType);
+        List<HashMap<String ,Object >> res = DeviceRelayUtil.getRelaySwitch(relaySwitchService, devEUI, relayType);
         if (res != null && res.size()!= 0) {
             return  new TMessage(TMessage.CODE_SUCCESS, "获取成功",res);
         }

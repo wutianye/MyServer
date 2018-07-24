@@ -7,7 +7,7 @@ public class Constants {
     final public static String MQTT_HOST = "tcp://39.106.54.222:1883";
     final public static String MQTT_USERNAME = "cdx";
     final public static String MQTT_PASSWORD = "cdxhhhhh";
-    final public static String MQTT_TOPIC = "application/2/device/+/rx";
+    final public static String MQTT_TOPIC = "application/2/device/004a770066003301/rx";
     final public static String MQTT_TOPIC_PREFIX = "application/2/device/";
 //    final public static String MQTT_HOST = "tcp://www.liuyunxing.cn:1883/";
 //    final public static String MQTT_USERNAME = "test2";
@@ -25,7 +25,8 @@ public class Constants {
     final public static String ADD_DEVICE_DEFAULT_DESCRIPTION = "这是描述";
     final public static String ADD_DEVICE_DEFAULT_DEVICEPROFILEID = "0391774c-8fcb-46b1-a225-9faef7d57fe1";
 
-
+    //默认上传速率（在添加设备时设置的默认值）
+    final public static int DEFAULT_FREQUENCY = 8;
 
 
 }

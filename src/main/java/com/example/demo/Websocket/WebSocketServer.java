@@ -50,6 +50,7 @@ public class WebSocketServer {
     private String devEUI="";
     private MQTT mqtt;
     private BlockingConnection connection;
+    private int timeout;
     //记录用户状态
     public static HashMap<String, Boolean> userState = new HashMap<String, Boolean>();
 
@@ -75,6 +76,7 @@ public class WebSocketServer {
 
             throw new RuntimeException("该用户下不存在相应设备！");
         }
+        timeout = getFrequency(devEUI);
 
         webSocketSet.put(id, this); // 加入set中
         addOnlineCount(); // 在线人数+1
@@ -230,6 +232,12 @@ public class WebSocketServer {
         return false;
     }
 
+    //获取设备对应速率
+    public int getFrequency(String devEUI) {
+        UserDevice userDevice = userDeviceService.findBydevEUI(devEUI);
+        return userDevice.getFrequency();
+    }
+
     class SubThread extends Thread{
         private BlockingConnection connection;
         public SubThread(BlockingConnection connection){
@@ -240,8 +248,8 @@ public class WebSocketServer {
                 while(connection.isConnected()) {
                     Message message = null;
                     try {
-                        //receive最多等待5秒继续执行下面的代码
-                        message = connection.receive(5, TimeUnit.SECONDS);
+                        //receive最多等待timeout秒继续执行下面的代码
+                        message = connection.receive(timeout, TimeUnit.SECONDS);
                     } catch (Exception e) {
                         System.out.println("receive 异常！");
                         e.printStackTrace();

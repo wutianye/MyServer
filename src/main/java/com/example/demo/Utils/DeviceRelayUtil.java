@@ -6,6 +6,7 @@ import com.example.demo.Entity.RelayType;
 import com.example.demo.Service.DeviceRelayService;
 import com.example.demo.Service.RelaySwitchService;
 import com.example.demo.Service.RelayTypeService;
+import com.sun.org.apache.xerces.internal.xs.datatypes.ObjectList;
 import io.swagger.models.auth.In;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,8 +52,8 @@ public class DeviceRelayUtil {
     }
 
     //获取指定relayType下开关的switchId, switchName和当前开关的状态
-    public static List<HashMap<String, String>> getRelaySwitch(RelaySwitchService relaySwitchService, String devEUI, String relayType) {
-        List<HashMap<String, String>> hashMapList = new ArrayList<HashMap<String, String>>();
+    public static List<HashMap<String, Object>> getRelaySwitch(RelaySwitchService relaySwitchService, String devEUI, String relayType) {
+        List<HashMap<String, Object>> hashMapList = new ArrayList<HashMap<String, Object>>();
         List<RelaySwitch> relaySwitchList = relaySwitchService.findByrelayType(relayType);
         //下发获取继电器状态指令，回复一个字符串如00000010，代表8位继电器当前开关状态
         //注意：此时的states结果是逆序的，要转换一下
@@ -74,13 +75,13 @@ public class DeviceRelayUtil {
             } catch (Exception e) {
                 throw new RuntimeException("不能够处理index！");
             }
-            HashMap<String, String> hashMap = new HashMap<String, String>();
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
             hashMap.put("switchId", relaySwitch.getSwitchId());
             hashMap.put("switchName", relaySwitch.getSwitchName());
             if (states.substring(index, index+1).equals("0")) {
-                hashMap.put("state", "0");//开关状态：关
+                hashMap.put("state", 0);//开关状态：关
             } else if (states.substring(index, index+1).equals("1")){
-                hashMap.put("state", "1");//开关状态：开
+                hashMap.put("state", 1);//开关状态：开
             } else {
                 continue;
             }
@@ -94,7 +95,17 @@ public class DeviceRelayUtil {
         Info info = new Info();
         String instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_RELAY_CONTROL + Instructions.RELAY_STATE_GET + "ff");
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "rstate");
+
+        int count = 3;
+        while (count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "rstate");
+            count--;
+            if (info.isResult()) {
+                System.out.println("获取继电器状态成功！");
+                break;
+            }
+        }
+
         if (!info.isResult()) {
             System.out.println("获取继电器状态，info:" + info.getInfo());
             return null;
@@ -122,10 +133,20 @@ public class DeviceRelayUtil {
 
     //构造修改继电器状态指令，下发指令，等待回复结果
     public static Info downlinkInstruction(String devEUI, String switchId, String state) {
-        Info info;
+        Info info = new Info();
         String instruction = MQTTUtil.makeInstructions(Instructions.DOWNLINK_RELAY_CONTROL + switchId + state + "ff");
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+
+        int count = 3;
+        while (count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            count--;
+            if (info.isResult()) {
+                System.out.println("修改继电器开关状态成功！");
+                break;
+            }
+        }
+
         return info;
     }
 
@@ -157,11 +178,23 @@ public class DeviceRelayUtil {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            return new Info(false, "参数不符合要求！");
         }
 
         String instruction = MQTTUtil.makeInstructions(str);
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
-        info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+
+        int count = 3;
+        while(count > 0) {
+            info = MQTTUtil.publish(topic, MQTTUtil.makeData(instruction), "ack");
+            count--;
+            if (info.isResult()) {
+                System.out.println("修改继电器开关状态成功！");
+                info.setInfo("修改继电器开关状态成功！");
+                break;
+            }
+        }
+
         return info;
     }
 }
