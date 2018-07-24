@@ -103,7 +103,7 @@ public class WebSocketServer {
             if(this.subcribThread.isInterrupted()){
                 this.subcribThread.interrupt();// 打断睡眠
             }
-  /*          this.flag = false;*/
+
 
                     System.out.println(this.id + "断开连接"); // 这个循环进不去
                     webSocketSet.remove(this);
@@ -268,14 +268,13 @@ public class WebSocketServer {
                         }
                         message.ack();
                     } else {
-                        /*
                         try {
                             String jsonData = DemoDATA.getDemoDATA();
                             sendMessage(jsonData +""); // 推送数据给前端， 返回给前端的假数据
                             System.out.println(jsonData);
                         } catch (IOException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                         System.out.println("暂无数据...");
                     }
                 }

@@ -56,6 +56,7 @@ public class DeleteUtil {
     public static TMessage deleteSensor(String devEUI, String typeid) {
         //关闭对应传感器，下发配置
         DeviceSensor deviceSensor = deviceSensorService.findBydevEUIAndTypeid(devEUI, typeid);
+        if (deviceSensor == null) return  new TMessage(TMessage.CODE_FAILURE,"设备不存在");
         if (deviceSensor.getState().equals("1")) {
             deviceSensor.setState("0");
             Info info = DeviceSensorUtil.updatestate(deviceSensorService, deviceSensor);
