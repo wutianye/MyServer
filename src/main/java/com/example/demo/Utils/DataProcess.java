@@ -212,6 +212,9 @@ public class DataProcess {
                         String GPSstr = new String(CRC16Modbus.HexString2Bytes(forcheck.substring(index, index + length * 2)));
                         System.out.println("GPS:" + GPSstr);
                         String value = GPSHander(GPSstr);
+                        if (value == null) {
+                            break;
+                        }
                         System.out.println("GPSValue: " + value);
                         //存数据
                         Data data = new Data(date, devEUI, typeid, value);
@@ -471,6 +474,9 @@ public class DataProcess {
                     if (length == 26) {
                         String GPSstr = new String(CRC16Modbus.HexString2Bytes(forcheck.substring(index, index + length * 2)));
                         String value = GPSHander(GPSstr);
+                        if (value == null) {
+                            break;
+                        }
 
                         RealTimeInfo realTimeInfo_latitude = new RealTimeInfo(date, devEUI, typeid, "latitude", value.substring(0, value.indexOf("_")));
                         RealTimeInfo realTimeInfo_longitude = new RealTimeInfo(date, devEUI, typeid, "longitude", value.substring(value.indexOf("_") + 1, value.length()));
@@ -677,30 +683,36 @@ public class DataProcess {
 
     //处理GPS数据，返回 纬度_经度 值，如：118.666_31.5233, -118.22_31.222
     public static String GPSHander(String GPSstr) {
-        String latitudeValue = GPSstr.substring(0, GPSstr.indexOf(","));
-        String latitudeDirection = GPSstr.substring(GPSstr.indexOf(",") + 1, GPSstr.indexOf(",", GPSstr.indexOf(",") + 1));
-        String substr = GPSstr.substring(GPSstr.indexOf(",", GPSstr.indexOf(",") + 1) + 1 ,GPSstr.length());
-        String longtitudeValue = substr.substring(0, substr.indexOf(","));
-        String longtitudeDirection = substr.substring(substr.indexOf(",") + 1, substr.length());
+        try {
+            String latitudeValue = GPSstr.substring(0, GPSstr.indexOf(","));
+            String latitudeDirection = GPSstr.substring(GPSstr.indexOf(",") + 1, GPSstr.indexOf(",", GPSstr.indexOf(",") + 1));
+            String substr = GPSstr.substring(GPSstr.indexOf(",", GPSstr.indexOf(",") + 1) + 1 ,GPSstr.length());
+            String longtitudeValue = substr.substring(0, substr.indexOf(","));
+            String longtitudeDirection = substr.substring(substr.indexOf(",") + 1, substr.length());
 
-        String returnvalue = "";
-        String dir = latitudeDirection.equals("S") ? "-":"";
-        int i = Integer.parseInt(latitudeValue.substring(0, latitudeValue.indexOf(".")));
-        int z = Integer.parseInt(latitudeValue.substring(latitudeValue.indexOf(".") + 1), latitudeValue.length());
-        int x = i / 100;
-        int y = i % 100;
-        float f = (float) (x + y / 60.0 + z / 6000000.0);
-        returnvalue = returnvalue + f;
+            String returnvalue = "";
+            String dir = latitudeDirection.equals("S") ? "-":"";
+            int i = Integer.parseInt(latitudeValue.substring(0, latitudeValue.indexOf(".")));
+            int z = Integer.parseInt(latitudeValue.substring(latitudeValue.indexOf(".") + 1), latitudeValue.length());
+            int x = i / 100;
+            int y = i % 100;
+            float f = (float) (x + y / 60.0 + z / 6000000.0);
+            returnvalue = dir + returnvalue + f;
 
-        dir = longtitudeDirection.equals("W") ? "-":"";
-        i = Integer.parseInt(longtitudeValue.substring(0, longtitudeValue.indexOf(".")));
-        z = Integer.parseInt(longtitudeValue.substring(longtitudeValue.indexOf(".") + 1), longtitudeValue.length());
-        x = i / 100;
-        y = i % 100;
-        f = (float) (x + y / 60.0 + z / 6000000.0);
-        returnvalue = returnvalue + "_"+ f;
+            dir = longtitudeDirection.equals("W") ? "-":"";
+            i = Integer.parseInt(longtitudeValue.substring(0, longtitudeValue.indexOf(".")));
+            z = Integer.parseInt(longtitudeValue.substring(longtitudeValue.indexOf(".") + 1), longtitudeValue.length());
+            x = i / 100;
+            y = i % 100;
+            f = (float) (x + y / 60.0 + z / 6000000.0);
+            returnvalue = dir + returnvalue + "_"+ f;
 
-        return returnvalue;
+            return returnvalue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("GPS数据格式错误！");
+        }
+        return null;
     }
 
 }
