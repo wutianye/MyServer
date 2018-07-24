@@ -23,7 +23,14 @@ public class CRC16Modbus {
         }
         //高低位转换，看情况使用（譬如本人这次对led彩屏的通讯开发就规定校验码高位在前低位在后，也就不需要转换高低位)
         CRC = ( (CRC & 0x0000FF00) >> 8) | ( (CRC & 0x000000FF ) << 8);
-        return Integer.toHexString(CRC);
+        String hexString = Integer.toHexString(CRC);
+        int length = hexString.length();
+        if (length < 4) {
+            for (int k = 0; k < 4 - length; k++) {
+                hexString = "0" + hexString;
+            }
+        }
+        return hexString;
     }
 
     /**

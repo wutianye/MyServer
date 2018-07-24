@@ -182,6 +182,7 @@ public class DeviceRelayUtil {
         }
 
         String instruction = MQTTUtil.makeInstructions(str);
+//        System.out.println("instruction:" + instruction);
         String topic = MQTTUtil.makeTopic(devEUI, "tx");
 
         int count = 3;

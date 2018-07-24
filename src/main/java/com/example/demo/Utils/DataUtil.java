@@ -29,77 +29,54 @@ public class DataUtil {
         return toHashlist(dataList);
     }
 
-    //获取给定日期、某devEUI、typeid的24时数据list
+    //获取给定日期、某devEUI、typeid的某日数据list
     public static List<Data> getdatalist(DataService dataService, String date, String devEUI, String typeid) {
         List<Data> dataList = new ArrayList<Data>();
         Set<Data> dataSet = new HashSet<Data>();
-        int i;
         String str = "";
-        for (i = 0; i < 24; i++) {
-            if (i <= 9) {
-                str = date + "0" + i;
-            } else {
-                str = date + i;
+        String pattern = date + "*_" + devEUI + "_" + typeid;
+        Set<String> stringSet = redisService.getKeysByPattern(pattern);
+        //按每天去查，如果这一天的数据少于240 * 24条，则去MySQL中取数据
+        if (stringSet.size() < 240 * 24) {
+            //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+            str = date + "%";
+            dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
+            //存redis一份，放线程中处理
+            redisHander(dataSet);
+        } else {
+            for (String key : stringSet) {
+                String value = redisService.getValue(key);
+                Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
+                dataSet.add(data);
             }
-            String pattern = str + "*_" + devEUI + "_" + typeid;
-            Set<String> stringSet = redisService.getKeysByPattern(pattern);
-            //按每小时去查，如果这一小时的数据少于240条，则去MySQL中取数据
-            if (stringSet.size() < 240) {
-                //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
-                str = "%" + str + "%";
-                dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
-                for (Data data : dataSet) {
-                    String key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
-                    redisService.setValue(key, data.getValue());
-                }
-            } else {
-                for (String key : stringSet) {
-                    String value = redisService.getValue(key);
-                    Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
-                    dataSet.add(data);
-                }
-            }
-            dataList.addAll(dataSet);
-            dataSet.clear();
         }
+        dataList.addAll(dataSet);
         return dataList;
     }
 
-    //获取给定日期、某devEUI、typeid的24时数据list（一个传感器有多个数据）
+    //获取给定日期、某devEUI、typeid的某日数据list（一个传感器有多个数据）
     public static List<Data> getdatalistwithoption(DataService dataService, String date, String devEUI, String typeid, String choice) {
         List<Data> dataList = new ArrayList<Data>();
         Set<Data> dataSet = new HashSet<Data>();
-        int i;
         String str = "";
-        for (i = 0; i < 24 ; i++) {
-            if (i <= 9) {
-                str = date + "0" + i;
-            } else {
-                str = date + i;
+        String pattern = date + "*_" + devEUI + "_" + typeid;
+        Set<String> stringSet = redisService.getKeysByPattern(pattern);
+        //按每天去查，如果这一天的数据少于240 * 24条，则去MySQL中取数据
+        if (stringSet.size() < 240 * 24) {
+            //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
+            str = date + "%";
+            dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
+            redisHander(dataSet);
+        } else {
+            for (String key : stringSet) {
+                String value = redisService.getValue(key);
+                Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
+                dataSet.add(data);
             }
-            String pattern = str + "*_" + devEUI + "_" + typeid;
-            Set<String> stringSet = redisService.getKeysByPattern(pattern);
-            //按每小时去查，如果这一小时的数据少于240条，则去MySQL中取数据
-            if (stringSet.size() < 240) {
-                //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
-                str = "%" + str + "%";
-                dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
-                for (Data data : dataSet) {
-                    String key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
-                    redisService.setValue(key, data.getValue());
-                }
-            } else {
-                for (String key : stringSet) {
-                    String value = redisService.getValue(key);
-                    Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
-                    dataSet.add(data);
-                }
-            }
-            for (Data data : dataSet) {
-                data.setValue(handleChoice(choice, data.getValue()));
-                dataList.add(data);
-            }
-            dataSet.clear();
+        }
+        for (Data data : dataSet) {
+            data.setValue(handleChoice(choice, data.getValue()));
+            dataList.add(data);
         }
 
         return dataList;
@@ -155,33 +132,32 @@ public class DataUtil {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         List<Data> dataList = new ArrayList<Data>();
         Set<Data> dataSet = new HashSet<Data>();
+        Set<String> redisKeysSet = new HashSet<String >();
         try {
             Date startdate = df.parse(date1);
             Date enddate = df.parse(date2);
             List<Date> dateList = getMonthBetweenDate(startdate, enddate);
+            int length = dateList.size();//一共多少天
+            String dateid1 = date1 + "000000";
+            String dateid2 = date2 + "235959";
             for (Date date : dateList) {
                 String dateid = df.format(date);
                 String pattern = dateid + "*_" + devEUI + "_" + typeid;
                 Set<String> stringSet = redisService.getKeysByPattern(pattern);
-                //按每小时去查，如果这一天的数据少于240*24条，则去MySQL中取数据
-                if (stringSet.size() < 240 * 24) {
-                    //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
-                    String str = "%" + dateid + "%";
-                    dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
-                    for (Data data : dataSet) {
-                        String key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
-                        redisService.setValue(key, data.getValue());
-                    }
-                } else {
-                    for (String key : stringSet) {
-                        String value = redisService.getValue(key);
-                        Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
-                        dataSet.add(data);
-                    }
-                }
-                dataList.addAll(dataSet);
-                dataSet.clear();
+                redisKeysSet.addAll(stringSet);
             }
+            //按总天数去查，如果这些天的数据少于240*24*length条，则去MySQL中取数据
+            if (redisKeysSet.size() < 240 * 24 * length) {
+                dataSet.addAll(dataService.findByDateBetweenDate1AndDate2AndDevEUIAndTypeid(dateid1, dateid2, devEUI, typeid));
+                redisHander(dataSet);
+            } else {
+                for (String key : redisKeysSet) {
+                    String value = redisService.getValue(key);
+                    Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
+                    dataSet.add(data);
+                }
+            }
+            dataList.addAll(dataSet);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -193,35 +169,34 @@ public class DataUtil {
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         List<Data> dataList = new ArrayList<Data>();
         Set<Data> dataSet = new HashSet<Data>();
+        Set<String> redisKeysSet = new HashSet<String >();
         try {
             Date startdate = df.parse(date1);
             Date enddate = df.parse(date2);
             List<Date> dateList = getMonthBetweenDate(startdate, enddate);
+            int length = dateList.size();//一共多少天
+            String dateid1 = date1 + "000000";
+            String dateid2 = date2 + "235959";
             for (Date date : dateList) {
                 String dateid = df.format(date);
                 String pattern = dateid + "*_" + devEUI + "_" + typeid;
                 Set<String> stringSet = redisService.getKeysByPattern(pattern);
-                //按每小时去查，如果这一小时的数据少于240*24条，则去MySQL中取数据
-                if (stringSet.size() < 240 * 24) {
-                    //当redis中没有全部需要的数据时，去mysql里查询，并存入redis一份
-                    String str = "%" + dateid + "%";
-                    dataSet.addAll(dataService.findByDateLikeAndDevEUIAndTypeid(str, devEUI, typeid));
-                    for (Data data : dataSet) {
-                        String key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
-                        redisService.setValue(key, data.getValue());
-                    }
-                } else {
-                    for (String key : stringSet) {
-                        String value = redisService.getValue(key);
-                        Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
-                        dataSet.add(data);
-                    }
+                redisKeysSet.addAll(stringSet);
+            }
+            //按总天数去查，如果这些天的数据少于240*24*length条，则去MySQL中取数据
+            if (redisKeysSet.size() < 240 * 24 * length) {
+                dataSet.addAll(dataService.findByDateBetweenDate1AndDate2AndDevEUIAndTypeid(dateid1, dateid2, devEUI, typeid));
+                redisHander(dataSet);
+            } else {
+                for (String key : redisKeysSet) {
+                    String value = redisService.getValue(key);
+                    Data data = new Data(key.substring(0, key.indexOf("_")), devEUI, typeid, value);
+                    dataSet.add(data);
                 }
-                for (Data data : dataSet) {
-                    data.setValue(handleChoice(choice, data.getValue()));
-                    dataList.add(data);
-                }
-                dataSet.clear();
+            }
+            for (Data data : dataSet) {
+                data.setValue(handleChoice(choice, data.getValue()));
+                dataList.add(data);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -255,4 +230,18 @@ public class DataUtil {
         return lDate;
     }
 
+
+    //服务器线程，处理mysql查到的数据存redis操作
+    public static void redisHander(Set<Data> dataSet) {
+        Runnable thread = new Runnable() {
+            @Override
+            public void run() {
+                for (Data data : dataSet) {
+                    String key = data.getDate() + "_" + data.getDevEUI() + "_" + data.getTypeid();
+                    redisService.setValue(key, data.getValue());
+                }
+            }
+        };
+        DataProcess.executor.execute(thread);
+    }
 }

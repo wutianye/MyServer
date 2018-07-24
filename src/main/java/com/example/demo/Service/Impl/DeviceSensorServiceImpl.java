@@ -6,6 +6,7 @@ import com.example.demo.Service.DeviceSensorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -36,12 +37,14 @@ public class DeviceSensorServiceImpl implements DeviceSensorService{
     }
 
     @Override
+    @Transactional
     public void deleteBydevEUI(String devEUI) {
         deviceSensorJpaRepository.deleteAllByDevEUI(devEUI);
         deviceSensorJpaRepository.flush();
     }
 
     @Override
+    @Transactional
     public void deleteBydevEUIAndTypeid(String devEUI, String typeid) {
         deviceSensorJpaRepository.deleteByDevEUIAndTypeid(devEUI, typeid);
         deviceSensorJpaRepository.flush();
